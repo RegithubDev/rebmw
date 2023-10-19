@@ -255,4 +255,41 @@ public class BMWDao {
 		}
 		return count;
 	}
+
+	public boolean uploadBMWList(BMW bmw, BrainBox obj, List<BMW> pushedRecords, HttpServletResponse response) throws SQLException {
+		int count = 0;
+		boolean flag = false;
+		TransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
+		try {
+			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+			if(!StringUtils.isEmpty(bmw)) {
+				BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(bmw);
+					
+					 
+					String insertQry = "INSERT INTO [customers_master] " 
+							+ "(KUNNR,NAME1,NAME_CO,STREET,CITY,POSTCODE,STATECODE,COUNTRY,LANGU,MOBILENUMBER,MAILID,CUSTOMERGROUP,AUFSD,ACTSERVICECERTFROMDATE,ACTSERVICECERTTODATE,SERVICESTARTDATE,"
+							+ "REGISTRATIONDATE,UPPERSLABINKG,RATEREVISIONPERIOD,RATEREVISION,LATLONGONPICKUPPOINT,CUSTOMERAGREEMENTFROM,CUSTOMERAGREEMENTTO,CUS_GRP,CUSTOMERFACILITY,CUSTOMERFACILITYTYPE,"
+							+ "CUSTOMERFREQUENCY,NOOFPICKUPLOCATION,ACTIVE_INACTIVE,SERVEDINMONTHORNOT,NOOFDAYSSERVEDINMONTH)"
+							+ " VALUES"
+							+ " (:KUNNR,:NAME1,:NAME_CO,:STREET,:CITY,:POSTCODE,:STATECODE,:COUNTRY,:LANGU,:MOBILENUMBER,:MAILID,:CUSTOMERGROUP,:AUFSD,:ACTSERVICECERTFROMDATE,:ACTSERVICECERTTODATE,:SERVICESTARTDATE,"
+							+ ":REGISTRATIONDATE,:UPPERSLABINKG,:RATEREVISIONPERIOD,:RATEREVISION,:LATLONGONPICKUPPOINT,:CUSTOMERAGREEMENTFROM,:CUSTOMERAGREEMENTTO,:CUS_GRP,:CUSTOMERFACILITY,:CUSTOMERFACILITYTYPE,"
+							+ ":CUSTOMERFREQUENCY,:NOOFPICKUPLOCATION,:ACTIVE_INACTIVE,:SERVEDINMONTHORNOT,:NOOFDAYSSERVEDINMONTH)";
+					
+					paramSource = new BeanPropertySqlParameterSource(bmw);	 
+				    count = namedParamJdbcTemplate.update(insertQry, paramSource);
+				  if(count > 0) {
+					  flag = true;
+				  }
+				}
+			
+			transactionManager.commit(status);
+		}catch (Exception e) {
+			transactionManager.rollback(status);
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+			
+		}
+		return flag;
+	}
 }

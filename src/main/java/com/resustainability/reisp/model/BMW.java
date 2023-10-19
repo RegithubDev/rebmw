@@ -9,9 +9,500 @@ public class BMW {
 private String company,plant,CustomerDistrict,user_id,password,repulled,user_ip,msg,PTC_status,CustomerTown,CustomerName,CustomerCABSCode,CustomerSAPCode,
 	TypeofEstablishment,ActualVisitDate,ActualVisitMonth,ActualVisitYear,VisitDayTime,BlueCount,BlueWeight,
 	RedCount,RedWeight,YellowCount,YellowWeight,CytotoxicCount,CytotoxicWeight,WhitesCount,WhitesWeight,TotalCount,Logs,
-	CollectionLatitude,ServerDateTime,uniqueID,Active;
-
+	CollectionLatitude,ServerDateTime,uniqueID,Active,
 	
+	name,h_no,sap_customer_id,active,mobile,customer_email
+,executive_email,supervisor_contact_no,supervisor_email,route_mbd_display_name,hospital_type,contact_person
+,establishment_type,contract_start_date,contract_end_date,service_frequency,street,city,zip,no_of_beds
+,town_display_name,district_display_name,pcb_id,spcb_unique_client_code,plant_name,sd_plant_code,state_code
+,actual_service_start_date,customer_group,service_block_status_from_sales,
+
+kUNNR,nAME1,nAME_CO,sTREET,cITY,pOSTCODE,sTATECODE,cOUNTRY,lANGU,mOBILENUMBER,mAILID,cUSTOMERGROUP,aUFSD,aCTSERVICECERTFROMDATE,aCTSERVICECERTTODATE,sERVICESTARTDATE,
+rEGISTRATIONDATE,uPPERSLABINKG,rATEREVISIONPERIOD,rATEREVISION,lATLONGONPICKUPPOINT,cUSTOMERAGREEMENTFROM,cUSTOMERAGREEMENTTO,cUS_GRP,cUSTOMERFACILITY,cUSTOMERFACILITYTYPE,
+cUSTOMERFREQUENCY,nOOFPICKUPLOCATION,aCTIVE_INACTIVE,sERVEDINMONTHORNOT,nOOFDAYSSERVEDINMONTH
+;
+
+@JsonProperty("KUNNR")
+public String getkUNNR() {
+	return kUNNR;
+}
+
+public void setkUNNR(String kUNNR) {
+	this.kUNNR = kUNNR;
+}
+
+@JsonProperty("NAME1")
+public String getnAME1() {
+	return nAME1;
+}
+
+public void setnAME1(String nAME1) {
+	this.nAME1 = nAME1;
+}
+@JsonProperty("NAME_CO")
+public String getnAME_CO() {
+	return nAME_CO;
+}
+
+public void setnAME_CO(String nAME_CO) {
+	this.nAME_CO = nAME_CO;
+}
+@JsonProperty("STREET")
+public String getsTREET() {
+	return sTREET;
+}
+
+public void setsTREET(String sTREET) {
+	this.sTREET = sTREET;
+}
+@JsonProperty("CITY")
+public String getcITY() {
+	return cITY;
+}
+
+public void setcITY(String cITY) {
+	this.cITY = cITY;
+}
+@JsonProperty("POSTCODE")
+public String getpOSTCODE() {
+	return pOSTCODE;
+}
+
+public void setpOSTCODE(String pOSTCODE) {
+	this.pOSTCODE = pOSTCODE;
+}
+@JsonProperty("STATECODE")
+public String getsTATECODE() {
+	return sTATECODE;
+}
+
+public void setsTATECODE(String sTATECODE) {
+	this.sTATECODE = sTATECODE;
+}
+@JsonProperty("COUNTRY")
+public String getcOUNTRY() {
+	return cOUNTRY;
+}
+
+public void setcOUNTRY(String cOUNTRY) {
+	this.cOUNTRY = cOUNTRY;
+}
+@JsonProperty("LANGU")
+public String getlANGU() {
+	return lANGU;
+}
+
+public void setlANGU(String lANGU) {
+	this.lANGU = lANGU;
+}
+@JsonProperty("MOBILENUMBER")
+public String getmOBILENUMBER() {
+	return mOBILENUMBER;
+}
+
+public void setmOBILENUMBER(String mOBILENUMBER) {
+	this.mOBILENUMBER = mOBILENUMBER;
+}
+@JsonProperty("MAILID")
+public String getmAILID() {
+	return mAILID;
+}
+
+public void setmAILID(String mAILID) {
+	this.mAILID = mAILID;
+}
+@JsonProperty("CUSTOMERGROUP")
+public String getcUSTOMERGROUP() {
+	return cUSTOMERGROUP;
+}
+
+public void setcUSTOMERGROUP(String cUSTOMERGROUP) {
+	this.cUSTOMERGROUP = cUSTOMERGROUP;
+}
+@JsonProperty("AUFSD")
+public String getaUFSD() {
+	return aUFSD;
+}
+
+public void setaUFSD(String aUFSD) {
+	this.aUFSD = aUFSD;
+}
+@JsonProperty("ACTSERVICECERTFROMDATE")
+public String getaCTSERVICECERTFROMDATE() {
+	return aCTSERVICECERTFROMDATE;
+}
+
+public void setaCTSERVICECERTFROMDATE(String aCTSERVICECERTFROMDATE) {
+	this.aCTSERVICECERTFROMDATE = aCTSERVICECERTFROMDATE;
+}
+@JsonProperty("ACTSERVICECERTTODATE")
+public String getaCTSERVICECERTTODATE() {
+	return aCTSERVICECERTTODATE;
+}
+
+public void setaCTSERVICECERTTODATE(String aCTSERVICECERTTODATE) {
+	this.aCTSERVICECERTTODATE = aCTSERVICECERTTODATE;
+}
+@JsonProperty("SERVICESTARTDATE")
+public String getsERVICESTARTDATE() {
+	return sERVICESTARTDATE;
+}
+
+public void setsERVICESTARTDATE(String sERVICESTARTDATE) {
+	this.sERVICESTARTDATE = sERVICESTARTDATE;
+}
+@JsonProperty("REGISTRATIONDATE")
+public String getrEGISTRATIONDATE() {
+	return rEGISTRATIONDATE;
+}
+
+public void setrEGISTRATIONDATE(String rEGISTRATIONDATE) {
+	this.rEGISTRATIONDATE = rEGISTRATIONDATE;
+}
+@JsonProperty("UPPERSLABINKG")
+public String getuPPERSLABINKG() {
+	return uPPERSLABINKG;
+}
+
+public void setuPPERSLABINKG(String uPPERSLABINKG) {
+	this.uPPERSLABINKG = uPPERSLABINKG;
+}
+@JsonProperty("RATEREVISIONPERIOD")
+public String getrATEREVISIONPERIOD() {
+	return rATEREVISIONPERIOD;
+}
+
+public void setrATEREVISIONPERIOD(String rATEREVISIONPERIOD) {
+	this.rATEREVISIONPERIOD = rATEREVISIONPERIOD;
+}
+@JsonProperty("RATEREVISION")
+public String getrATEREVISION() {
+	return rATEREVISION;
+}
+
+public void setrATEREVISION(String rATEREVISION) {
+	this.rATEREVISION = rATEREVISION;
+}
+@JsonProperty("LATLONGONPICKUPPOINT")
+public String getlATLONGONPICKUPPOINT() {
+	return lATLONGONPICKUPPOINT;
+}
+
+public void setlATLONGONPICKUPPOINT(String lATLONGONPICKUPPOINT) {
+	this.lATLONGONPICKUPPOINT = lATLONGONPICKUPPOINT;
+}
+@JsonProperty("CUSTOMERAGREEMENTFROM")
+public String getcUSTOMERAGREEMENTFROM() {
+	return cUSTOMERAGREEMENTFROM;
+}
+
+public void setcUSTOMERAGREEMENTFROM(String cUSTOMERAGREEMENTFROM) {
+	this.cUSTOMERAGREEMENTFROM = cUSTOMERAGREEMENTFROM;
+}
+@JsonProperty("CUSTOMERAGREEMENTTO")
+public String getcUSTOMERAGREEMENTTO() {
+	return cUSTOMERAGREEMENTTO;
+}
+
+public void setcUSTOMERAGREEMENTTO(String cUSTOMERAGREEMENTTO) {
+	this.cUSTOMERAGREEMENTTO = cUSTOMERAGREEMENTTO;
+}
+@JsonProperty("CUS_GRP")
+public String getcUS_GRP() {
+	return cUS_GRP;
+}
+
+public void setcUS_GRP(String cUS_GRP) {
+	this.cUS_GRP = cUS_GRP;
+}
+@JsonProperty("CUSTOMERFACILITY")
+public String getcUSTOMERFACILITY() {
+	return cUSTOMERFACILITY;
+}
+
+public void setcUSTOMERFACILITY(String cUSTOMERFACILITY) {
+	this.cUSTOMERFACILITY = cUSTOMERFACILITY;
+}
+@JsonProperty("CUSTOMERFACILITYTYPE")
+public String getcUSTOMERFACILITYTYPE() {
+	return cUSTOMERFACILITYTYPE;
+}
+
+public void setcUSTOMERFACILITYTYPE(String cUSTOMERFACILITYTYPE) {
+	this.cUSTOMERFACILITYTYPE = cUSTOMERFACILITYTYPE;
+}
+@JsonProperty("CUSTOMERFREQUENCY")
+public String getcUSTOMERFREQUENCY() {
+	return cUSTOMERFREQUENCY;
+}
+
+public void setcUSTOMERFREQUENCY(String cUSTOMERFREQUENCY) {
+	this.cUSTOMERFREQUENCY = cUSTOMERFREQUENCY;
+}
+@JsonProperty("NOOFPICKUPLOCATION")
+public String getnOOFPICKUPLOCATION() {
+	return nOOFPICKUPLOCATION;
+}
+
+public void setnOOFPICKUPLOCATION(String nOOFPICKUPLOCATION) {
+	this.nOOFPICKUPLOCATION = nOOFPICKUPLOCATION;
+}
+@JsonProperty("ACTIVE_INACTIVE")
+public String getaCTIVE_INACTIVE() {
+	return aCTIVE_INACTIVE;
+}
+
+public void setaCTIVE_INACTIVE(String aCTIVE_INACTIVE) {
+	this.aCTIVE_INACTIVE = aCTIVE_INACTIVE;
+}
+@JsonProperty("SERVEDINMONTHORNOT")
+public String getsERVEDINMONTHORNOT() {
+	return sERVEDINMONTHORNOT;
+}
+
+public void setsERVEDINMONTHORNOT(String sERVEDINMONTHORNOT) {
+	this.sERVEDINMONTHORNOT = sERVEDINMONTHORNOT;
+}
+@JsonProperty("NOOFDAYSSERVEDINMONTH")
+public String getnOOFDAYSSERVEDINMONTH() {
+	return nOOFDAYSSERVEDINMONTH;
+}
+
+public void setnOOFDAYSSERVEDINMONTH(String nOOFDAYSSERVEDINMONTH) {
+	this.nOOFDAYSSERVEDINMONTH = nOOFDAYSSERVEDINMONTH;
+}
+
+	public String getName() {
+	return name;
+}
+
+public void setName(String name) {
+	this.name = name;
+}
+
+public String getH_no() {
+	return h_no;
+}
+
+public void setH_no(String h_no) {
+	this.h_no = h_no;
+}
+
+public String getSap_customer_id() {
+	return sap_customer_id;
+}
+
+public void setSap_customer_id(String sap_customer_id) {
+	this.sap_customer_id = sap_customer_id;
+}
+
+public String getMobile() {
+	return mobile;
+}
+
+public void setMobile(String mobile) {
+	this.mobile = mobile;
+}
+
+public String getCustomer_email() {
+	return customer_email;
+}
+
+public void setCustomer_email(String customer_email) {
+	this.customer_email = customer_email;
+}
+
+public String getExecutive_email() {
+	return executive_email;
+}
+
+public void setExecutive_email(String executive_email) {
+	this.executive_email = executive_email;
+}
+
+public String getSupervisor_contact_no() {
+	return supervisor_contact_no;
+}
+
+public void setSupervisor_contact_no(String supervisor_contact_no) {
+	this.supervisor_contact_no = supervisor_contact_no;
+}
+
+public String getSupervisor_email() {
+	return supervisor_email;
+}
+
+public void setSupervisor_email(String supervisor_email) {
+	this.supervisor_email = supervisor_email;
+}
+
+public String getRoute_mbd_display_name() {
+	return route_mbd_display_name;
+}
+
+public void setRoute_mbd_display_name(String route_mbd_display_name) {
+	this.route_mbd_display_name = route_mbd_display_name;
+}
+
+public String getHospital_type() {
+	return hospital_type;
+}
+
+public void setHospital_type(String hospital_type) {
+	this.hospital_type = hospital_type;
+}
+
+public String getContact_person() {
+	return contact_person;
+}
+
+public void setContact_person(String contact_person) {
+	this.contact_person = contact_person;
+}
+
+public String getEstablishment_type() {
+	return establishment_type;
+}
+
+public void setEstablishment_type(String establishment_type) {
+	this.establishment_type = establishment_type;
+}
+
+public String getContract_start_date() {
+	return contract_start_date;
+}
+
+public void setContract_start_date(String contract_start_date) {
+	this.contract_start_date = contract_start_date;
+}
+
+public String getContract_end_date() {
+	return contract_end_date;
+}
+
+public void setContract_end_date(String contract_end_date) {
+	this.contract_end_date = contract_end_date;
+}
+
+public String getService_frequency() {
+	return service_frequency;
+}
+
+public void setService_frequency(String service_frequency) {
+	this.service_frequency = service_frequency;
+}
+
+public String getStreet() {
+	return street;
+}
+
+public void setStreet(String street) {
+	this.street = street;
+}
+
+public String getCity() {
+	return city;
+}
+
+public void setCity(String city) {
+	this.city = city;
+}
+
+public String getZip() {
+	return zip;
+}
+
+public void setZip(String zip) {
+	this.zip = zip;
+}
+
+public String getNo_of_beds() {
+	return no_of_beds;
+}
+
+public void setNo_of_beds(String no_of_beds) {
+	this.no_of_beds = no_of_beds;
+}
+
+public String getTown_display_name() {
+	return town_display_name;
+}
+
+public void setTown_display_name(String town_display_name) {
+	this.town_display_name = town_display_name;
+}
+
+public String getDistrict_display_name() {
+	return district_display_name;
+}
+
+public void setDistrict_display_name(String district_display_name) {
+	this.district_display_name = district_display_name;
+}
+
+public String getPcb_id() {
+	return pcb_id;
+}
+
+public void setPcb_id(String pcb_id) {
+	this.pcb_id = pcb_id;
+}
+
+public String getSpcb_unique_client_code() {
+	return spcb_unique_client_code;
+}
+
+public void setSpcb_unique_client_code(String spcb_unique_client_code) {
+	this.spcb_unique_client_code = spcb_unique_client_code;
+}
+
+public String getPlant_name() {
+	return plant_name;
+}
+
+public void setPlant_name(String plant_name) {
+	this.plant_name = plant_name;
+}
+
+public String getSd_plant_code() {
+	return sd_plant_code;
+}
+
+public void setSd_plant_code(String sd_plant_code) {
+	this.sd_plant_code = sd_plant_code;
+}
+
+public String getState_code() {
+	return state_code;
+}
+
+public void setState_code(String state_code) {
+	this.state_code = state_code;
+}
+
+public String getActual_service_start_date() {
+	return actual_service_start_date;
+}
+
+public void setActual_service_start_date(String actual_service_start_date) {
+	this.actual_service_start_date = actual_service_start_date;
+}
+
+public String getCustomer_group() {
+	return customer_group;
+}
+
+public void setCustomer_group(String customer_group) {
+	this.customer_group = customer_group;
+}
+
+public String getService_block_status_from_sales() {
+	return service_block_status_from_sales;
+}
+
+public void setService_block_status_from_sales(String service_block_status_from_sales) {
+	this.service_block_status_from_sales = service_block_status_from_sales;
+}
 
 	@JsonProperty("BATCHID")
 	private String APIID;

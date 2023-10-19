@@ -36,11 +36,11 @@ public class BrainBoxController {
 	
 	@Autowired
 	CompanyService service;
+	 
+	@Autowired 
+	IRMService service1; 
 	
-	@Autowired
-	IRMService service1;
-	
-	@Autowired
+	@Autowired 
 	ProjectService service2;
 	
 	@RequestMapping(value = "/bb-is", method = {RequestMethod.POST, RequestMethod.GET})

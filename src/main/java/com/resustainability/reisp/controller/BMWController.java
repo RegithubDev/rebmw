@@ -48,14 +48,14 @@ import com.resustainability.reisp.service.BMWService;
 
 @RestController
 @RequestMapping("/reone")
-public class BMWController {
+public class BMWController { 
 
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
+    } 
 	Logger logger = Logger.getLogger(BMWController.class);
-	
+	   
 	@Autowired
 	BMWService service;
 	
@@ -73,7 +73,7 @@ public class BMWController {
 	    public String nameForField(MapperConfig<?> config, AnnotatedField field, String defaultName) {
 	        return defaultName.toLowerCase();
 	    }
-	}
+	} 
 
 	@RequestMapping(value = "/push-bmw-data", method = {RequestMethod.GET,RequestMethod.POST},produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -211,4 +211,88 @@ public class BMWController {
         throwable.printStackTrace(pw);
         return sw.toString();
     }
+	
+	@RequestMapping(value = "/upload-sap-data", method = {RequestMethod.GET,RequestMethod.POST},produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@JsonProperty
+	public String uploadBMWList(@RequestHeader("Authorization") String authentication,  @RequestBody List<BMW> obja, BMW obj1,BrainBox obj,HttpSession session,HttpServletResponse response , Errors filterErrors) throws JsonProcessingException {
+		 String json = null;
+		 boolean call_service = true;
+		 boolean log = true;
+		 int logInfo = 0;
+		 HashMap<String, String> data = new HashMap<String, String>();
+		 ObjectMapper objectMapper = new ObjectMapper();
+		 objectMapper.setPropertyNamingStrategy(new LowercasePropertyNamingStrategy());
+		try {
+			boolean flag = false; 
+			int totalCounts = 0;
+			 String user_id1 = "recgwbsap";
+			 String password1 = "X1298extvbddyzB";
+			 String pair=new String(Base64.decodeBase64(authentication.substring(6)));
+		     String userName=pair.split(":")[0];
+		     String password=pair.split(":")[1];
+		     obj1.setUser_id(userName);
+		     obj1.setPassword(password);
+		     InetAddress ip = InetAddress.getLocalHost();
+		     System.out.println("IP address: " + ip.getHostAddress());
+		     String newIp = ip.getHostAddress();
+			 String Myip = "10.100.3.11";
+			 flag = true;
+			
+				obj1.setPTC_status(null);
+			 if(flag ) {
+				 if(!user_id1.contentEquals(obj1.getUser_id()) || !password1.contentEquals(obj1.getPassword())) {
+					 call_service = false;
+					 data = new HashMap<String, String>();
+					 data.put("500","User Name or Password Incorrect!");
+					 json = objectMapper.writeValueAsString(data);
+					 obj1.setMsg("User Name or Password Incorrect!");
+				 }
+				 obj1.setUser_ip(newIp);
+				 if(call_service) {
+					 for(BMW bmw : obja) {
+				    	 totalCounts++;
+						 flag  = service.uploadBMWList(bmw,obj,obja,response);
+						 if(flag ) {
+							 data = new HashMap<String, String>();
+							 data.put("Success","Accepted => "+bmw.getkUNNR());
+							json = objectMapper.writeValueAsString(data);
+						 }
+						 if( "end".equalsIgnoreCase(bmw.getLog())) {
+							 data = new HashMap<String, String>();
+							 data.put("Success", totalCounts+" Records Inserted & Last Inserted ID => "+bmw.getSap_customer_id());
+							json = objectMapper.writeValueAsString(data);
+						 }
+					}
+				 }
+			 }else {
+				 data = new HashMap<String, String>();
+				 obj1.setUser_ip(newIp);
+				 data.put("500","No Access for this IP Address: "+newIp);
+			     json = objectMapper.writeValueAsString(data);
+			     obj1.setMsg("No Access for this IP Address"+ " : "+newIp);
+			 }
+		  
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			if("Index 0 out of bounds for length 0".contentEquals(e.getMessage())) {
+				data = new HashMap<String, String>();
+				 data.put("500","Please enter User Name and Password!");
+				json = objectMapper.writeValueAsString(data);
+			}else if("Conversion failed when converting the".contentEquals(e.getMessage())){
+				data = new HashMap<String, String>();
+				data.put("500",""+e.getMessage()+"");
+				json = objectMapper.writeValueAsString(data);
+			}
+			else {
+				data = new HashMap<String, String>();
+				data.put("500",getStackTraceAsString(e));
+				json = objectMapper.writeValueAsString(data);
+			}
+			logger.error("uploadBMWList : " + e.getMessage());
+		}
+		return json;
+	}
+
 }

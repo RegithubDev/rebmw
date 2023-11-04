@@ -1,4 +1,4 @@
-package com.resustainability.reisp.model;
+package IRM.java;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ public class BMW {
 	
 private String company,plant,CustomerDistrict,user_id,password,repulled,user_ip,msg,PTC_status,CustomerTown,CustomerName,CustomerCABSCode,CustomerSAPCode,
 	TypeofEstablishment,ActualVisitDate,ActualVisitMonth,ActualVisitYear,VisitDayTime,BlueCount,BlueWeight,
-	RedCount,RedWeight,YellowCount,YellowWeight,CytotoxicCount,CytotoxicWeight,WhitesCount,WhitesWeight,TotalCount,Logs,period,year,
+	RedCount,RedWeight,YellowCount,YellowWeight,CytotoxicCount,CytotoxicWeight,WhitesCount,WhitesWeight,TotalCount,Logs,
 	CollectionLatitude,ServerDateTime,uniqueID,Active,
 	
 	name,h_no,sap_customer_id,active,mobile,customer_email
@@ -107,14 +107,6 @@ public void setRegistrationnumber(String registrationnumber) {
 
 
 
-
-public String getPeriod() {
-	return period;
-}
-
-public void setPeriod(String period) {
-	this.period = period;
-}
 
 public String getSID() {
 	return SID;

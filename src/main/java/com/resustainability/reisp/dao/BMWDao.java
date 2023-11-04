@@ -1,12 +1,16 @@
 package com.resustainability.reisp.dao;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.resustainability.reisp.common.DateParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -21,7 +25,10 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.StringUtils;
 
 import com.resustainability.reisp.model.BMW;
+import com.resustainability.reisp.model.BMWSAP;
+import com.resustainability.reisp.model.BMWSAPOUTPUT;
 import com.resustainability.reisp.model.BrainBox;
+import com.resustainability.reisp.model.DashBoardWeighBridge;
 import com.resustainability.reisp.model.SBU;
 
 @Repository
@@ -268,11 +275,11 @@ public class BMWDao {
 					
 					 
 					String insertQry = "INSERT INTO [customers_master] " 
-							+ "(KUNNR,NAME1,NAME_CO,STREET,CITY,POSTCODE,STATECODE,COUNTRY,LANGU,MOBILENUMBER,MAILID,CUSTOMERGROUP,AUFSD,ACTSERVICECERTFROMDATE,ACTSERVICECERTTODATE,SERVICESTARTDATE,"
+							+ "(customer,serverTime,Registrationnumber,SA_STATUSBLOCK,SPCB_CD,NO_BEDS_INV,SD_Plantcode,SD_Plantname,NAME1,NAME_CO,STREET,CITY,POSTCODE,STATECODE,COUNTRY,LANGU,MOBILENUMBER,MAILID,CUSTOMERGROUP,AUFSD,ACTSERVICECERTFROMDATE,ACTSERVICECERTTODATE,SERVICESTARTDATE,"
 							+ "REGISTRATIONDATE,UPPERSLABINKG,RATEREVISIONPERIOD,RATEREVISION,LATLONGONPICKUPPOINT,CUSTOMERAGREEMENTFROM,CUSTOMERAGREEMENTTO,CUS_GRP,CUSTOMERFACILITY,CUSTOMERFACILITYTYPE,"
 							+ "CUSTOMERFREQUENCY,NOOFPICKUPLOCATION,ACTIVE_INACTIVE,SERVEDINMONTHORNOT,NOOFDAYSSERVEDINMONTH)"
 							+ " VALUES"
-							+ " (:KUNNR,:NAME1,:NAME_CO,:STREET,:CITY,:POSTCODE,:STATECODE,:COUNTRY,:LANGU,:MOBILENUMBER,:MAILID,:CUSTOMERGROUP,:AUFSD,:ACTSERVICECERTFROMDATE,:ACTSERVICECERTTODATE,:SERVICESTARTDATE,"
+							+ " (:customer,getdate(),:Registrationnumber,:SA_STATUSBLOCK,:SPCB_CD,:NO_BEDS_INV,:SD_Plantcode,:SD_Plantname,:NAME1,:NAME_CO,:STREET,:CITY,:POSTCODE,:STATECODE,:COUNTRY,:LANGU,:MOBILENUMBER,:MAILID,:CUSTOMERGROUP,:AUFSD,:ACTSERVICECERTFROMDATE,:ACTSERVICECERTTODATE,:SERVICESTARTDATE,"
 							+ ":REGISTRATIONDATE,:UPPERSLABINKG,:RATEREVISIONPERIOD,:RATEREVISION,:LATLONGONPICKUPPOINT,:CUSTOMERAGREEMENTFROM,:CUSTOMERAGREEMENTTO,:CUS_GRP,:CUSTOMERFACILITY,:CUSTOMERFACILITYTYPE,"
 							+ ":CUSTOMERFREQUENCY,:NOOFPICKUPLOCATION,:ACTIVE_INACTIVE,:SERVEDINMONTHORNOT,:NOOFDAYSSERVEDINMONTH)";
 					
@@ -291,5 +298,165 @@ public class BMWDao {
 			
 		}
 		return flag;
+	}
+
+	public String uploadData(String url, BMW bmw) {
+		 String json = null;
+		 boolean call_service = true;
+		 boolean log = true;
+		 int logInfo = 0;
+		 HashMap<String, String> data = new HashMap<String, String>();
+		 ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			boolean flag = false; 
+			if(!url.equals(null) && !"".equals(url) && url.contains(",")) {
+				String[] url_split1 = url.split("\\$");
+				String url_split2 = url_split1[1];
+				String[] url_split3 = url_split2.split("\\,");
+				int  i = 0;
+					for(int j = 0; j<= (url_split3.length - 1); j++ ) {
+						String[] url_split4 = url_split3[i].split("\\&");
+						if( i == 0) {
+							bmw.setSID(url_split4[0]);
+							bmw.setMID(url_split4[1]);
+							bmw.setRFID(url_split4[2]);
+							 String inputDate = url_split4[3].replace("//*", ""); // Example input date in DDMMYYYYHHMMSS format
+
+						        SimpleDateFormat inputFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+						        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						        String outputDate = "";
+						        try {
+						            java.util.Date date = inputFormat.parse(inputDate);
+						            outputDate =  outputFormat.format(date);
+						        } catch (ParseException e) {
+						            e.printStackTrace();
+						        }
+							bmw.setDOT(outputDate);
+						}else {
+							bmw.setRFID(url_split4[0]);
+							 String inputDate = url_split4[1].replace("//*", ""); // Example input date in DDMMYYYYHHMMSS format
+
+						        SimpleDateFormat inputFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+						        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						        String outputDate = "";
+						        try {
+						            java.util.Date date = inputFormat.parse(inputDate);
+						            outputDate =  outputFormat.format(date);
+						        } catch (ParseException e) {
+						            e.printStackTrace();
+						        }
+							bmw.setDOT(outputDate);
+						}
+				
+						NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+						BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(bmw);
+						String insertQry = "INSERT INTO [sillicon_ws_data] " 
+								+ "(SID,	MID,	RFID,	DOT,	serverTime)"
+								+ " VALUES"
+								+ " (:SID,	:MID,	:RFID,	:DOT,	getdate())";
+						
+						paramSource = new BeanPropertySqlParameterSource(bmw);	 
+					   int count = namedParamJdbcTemplate.update(insertQry, paramSource);
+					  if(count > 0) {
+						  flag = true;
+					  }
+					  i++;
+					}
+				
+			}else {
+				String[] url_split1 = url.split("\\$");
+				String url_split2 = url_split1[1];
+				String[] url_split4 = url_split2.split("\\&");
+					bmw.setSID(url_split4[0]);
+					bmw.setMID(url_split4[1]);
+					bmw.setRFID(url_split4[2]);
+					String inputDate = url_split4[3].replace("//*", ""); // Example input date in DDMMYYYYHHMMSS format
+
+			        SimpleDateFormat inputFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+			        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			        String outputDate = "";
+			        try {
+			            java.util.Date date = inputFormat.parse(inputDate);
+			            outputDate =  outputFormat.format(date);
+			        } catch (ParseException e) {
+			            e.printStackTrace();
+			        }
+					bmw.setDOT(outputDate);
+					NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+					BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(bmw);
+					String insertQry = "INSERT INTO [sillicon_ws_data] " 
+							+ "(SID,	MID,	RFID,	DOT,	serverTime)"
+							+ " VALUES"
+							+ " (:SID,	:MID,	:RFID,	:DOT,	getdate())";
+					
+					paramSource = new BeanPropertySqlParameterSource(bmw);	 
+				   int count = namedParamJdbcTemplate.update(insertQry, paramSource);
+				  if(count > 0) {
+					  flag = true;
+				  }
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+
+	
+	public List<BMWSAPOUTPUT> getTransactionsSummeryList(BMWSAP obj, BMWSAP dB) {
+		List<BMWSAPOUTPUT> objsList = new ArrayList<BMWSAPOUTPUT>();
+		try {
+			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+			BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(dB);		 
+			int arrSize1 = 0;
+		    String qry = "  SELECT (select profit_center from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS profit_center,		  "
+		    		+ "		(select profit_center_name from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS profit_center_name,  "
+		    		+ "		(select project_code from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS project_code,  "
+		    		+ "		 MAX(d.plant) AS plant_name,max(CustomerCABSCode) as customerId, "
+		    		+ "		  (select count(CustomerStatus) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) ) AS totalVisits,  "
+		    		+ "				 SUM(TRY_CAST(TotalCount AS FLOAT )) as TotalCount,  "
+		    		+ "				 SUM(TRY_CAST(TotalWeight AS FLOAT )) as TotalWeight,  "
+		    		+ "				 MAX(d.company) AS company, "
+		    		+ "				 (select company_code from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS company_code,  "
+		    		+ "(select count(CustomerStatus) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) and CustomerStatus = 'true') AS ActiveVistis,  "
+		    		+ "(select count(CustomerStatus) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) and CustomerStatus = 'false') AS incativeVisits, "
+		    		+ "				 MAX(d.plant) AS plant_name,				MAX(d.TypeofEstablishment) AS TypeofEstablishment,			  "
+		    		+ "				 MAX(d.ServiceFrequency) AS ServiceFrequency,				MAX(d.ActualVisitMonth) AS ActualVisitMonth,	  "
+		    		+ "				 MAX(d.CustomerStatus) AS CustomerStatus,CustomerSAPCode as customerID   "
+		    		+ "				FROM ALL_BMW_Sites.dbo.bmw_detailed d   "
+		    		+ "				left join [MasterDB].[dbo].[master_table] m on m.company = d.company "
+		    		+ "				 where CustomerSAPCode is not null ";
+			
+		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getProject_code())) {
+		    	qry = qry + "and  m.project_code like '%"+dB.getProject_code()+"%'";
+		    	arrSize1++;
+			}
+		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getCustomerSAPCode())) {
+		    	qry = qry + " AND d.CustomerSAPCode like '%"+dB.getCustomerSAPCode()+"%'";
+		    	arrSize1++;
+			}
+		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
+		    	qry = qry + " AND d.ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
+		    	arrSize1++;
+			}
+			qry = qry +"  group by CustomerSAPCode,ActualVisitMonth "; 
+			
+			
+			objsList = jdbcTemplate.query( qry, new BeanPropertyRowMapper<BMWSAPOUTPUT>(BMWSAPOUTPUT.class));
+			if(objsList.size() > 0 ) {
+				dB.setMSG("DATA Pulled");
+				dB.setStatus("Success");
+				String insertQry = "INSERT INTO [bmw_summery_logs] (project_code,CustomerCode,ActualVisitMonth,MSG,pull_datetime,status)"
+						+ " values (:project_code,:CustomerSAPCode,:ActualVisitMonth,:MSG,GETDATE(),:status)  ";
+				
+				paramSource = new BeanPropertySqlParameterSource(dB);		 
+			    int count = namedParamJdbcTemplate.update(insertQry, paramSource);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return objsList;
 	}
 }

@@ -1,6 +1,7 @@
 package com.resustainability.reisp.login.filer;
 import java.io.IOException;
 import java.net.Inet4Address;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,11 +15,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.resustainability.reisp.common.UrlGenerator;
+import com.resustainability.reisp.controller.BMWController.LowercasePropertyNamingStrategy;
 import com.resustainability.reisp.dao.UserDao;
+import com.resustainability.reisp.model.BMW;
 import  com.resustainability.reisp.model.User;
 
 
@@ -39,6 +44,11 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter{
 			requestURI = request.getRequestURI();
 			UrlGenerator ugObj = new UrlGenerator();
 			context_path = ugObj.getContextPath();
+			if(requestURI.equals("/rfid")) {
+				response.sendRedirect("/"+context_path+"/reone/rfid");
+				return true;
+			}
+			
 			if(requestURI.equals("/"+context_path+"/add-new-user") &&  !requestURI.equals("/"+context_path+"/login")) {
 				
 				 return true;
@@ -82,6 +92,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter{
 		}
 		  return true;
 	}
+
 	public int checkUserLoginDetails(User obj) throws Exception {
 		int totalRecords = 0;
 		try {

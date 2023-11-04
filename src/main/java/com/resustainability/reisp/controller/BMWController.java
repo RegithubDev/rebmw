@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
+import com.resustainability.reisp.common.UrlGenerator;
 import com.resustainability.reisp.constants.PageConstants;
 import com.resustainability.reisp.model.BrainBox;
 import com.resustainability.reisp.model.SBU;
@@ -220,6 +222,7 @@ public class BMWController {
 		 boolean call_service = true;
 		 boolean log = true;
 		 int logInfo = 0;
+		 String  ids = "";
 		 HashMap<String, String> data = new HashMap<String, String>();
 		 ObjectMapper objectMapper = new ObjectMapper();
 		 objectMapper.setPropertyNamingStrategy(new LowercasePropertyNamingStrategy());
@@ -248,21 +251,20 @@ public class BMWController {
 					 json = objectMapper.writeValueAsString(data);
 					 obj1.setMsg("User Name or Password Incorrect!");
 				 }
+				 String id = null;
 				 obj1.setUser_ip(newIp);
 				 if(call_service) {
 					 for(BMW bmw : obja) {
+						 id = bmw.getCustomer();
+						 ids = "["+id+"]"+ids;
 				    	 totalCounts++;
 						 flag  = service.uploadBMWList(bmw,obj,obja,response);
 						 if(flag ) {
 							 data = new HashMap<String, String>();
-							 data.put("Success","Accepted => "+bmw.getkUNNR());
+							 data.put("Success", totalCounts+" Records Inserted & Last Inserted ID => "+ids);
 							json = objectMapper.writeValueAsString(data);
 						 }
-						 if( "end".equalsIgnoreCase(bmw.getLog())) {
-							 data = new HashMap<String, String>();
-							 data.put("Success", totalCounts+" Records Inserted & Last Inserted ID => "+bmw.getSap_customer_id());
-							json = objectMapper.writeValueAsString(data);
-						 }
+						 
 					}
 				 }
 			 }else {
@@ -295,4 +297,40 @@ public class BMWController {
 		return json;
 	}
 
+	@RequestMapping(value = "/rfid", method = {RequestMethod.GET,RequestMethod.POST},produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@JsonProperty
+	public String rfid( BMW obj1,BrainBox obj,HttpSession session,HttpServletRequest request,HttpServletResponse response , Errors filterErrors) throws JsonProcessingException {
+		 String json = null;
+		 boolean call_service = true;
+		 boolean log = true;
+		 String requestURI = null;
+		 String context_path = null;
+		 int logInfo = 0;
+		 HashMap<String, String> data = new HashMap<String, String>();
+		 ObjectMapper objectMapper = new ObjectMapper();
+		 objectMapper.setPropertyNamingStrategy(new LowercasePropertyNamingStrategy());
+		try {
+			boolean flag = false; 
+			int totalCounts = 0;
+			BMW bmw  = new BMW();
+			requestURI = request.getRequestURI();
+			UrlGenerator ugObj = new UrlGenerator();
+			context_path = ugObj.getContextPath();
+			StringBuilder requestURL = new StringBuilder(request.getRequestURL().toString());
+			String queryString = request.getQueryString();
+			if(queryString != null) {
+				json = service.uploadData(requestURL.append('?').append(queryString).toString(),bmw);
+				 data.put("200","$RFID=0#");
+			     json = "$RFID=0#";
+			}
+			
+		  
+		}catch (Exception e) {
+			e.printStackTrace();
+			logger.error("uploadBMWList : " + e.getMessage());
+			 json = "$RFID=0#";
+		}
+		return json;
+	}
 }

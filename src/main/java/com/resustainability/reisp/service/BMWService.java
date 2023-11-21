@@ -44,7 +44,7 @@ public class BMWService {
 		return dao.getCountOfRecords(obj1);
 	}
 
-	public boolean uploadBMWList(BMW bmw, BrainBox obj, List<BMW> pushedRecords, HttpServletResponse response) throws SQLException {
+	public String[] uploadBMWList(BMW bmw, BrainBox obj, List<BMW> pushedRecords, HttpServletResponse response) throws SQLException {
 		return dao.uploadBMWList(bmw,obj,pushedRecords,response);
 	}
 

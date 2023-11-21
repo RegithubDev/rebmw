@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -262,42 +263,94 @@ public class BMWDao {
 		}
 		return count;
 	}
-
-	public boolean uploadBMWList(BMW bmw, BrainBox obj, List<BMW> pushedRecords, HttpServletResponse response) throws SQLException {
+	
+	public String[] uploadBMWList(BMW bmw, BrainBox obj, List<BMW> pushedRecords, HttpServletResponse response) throws SQLException {
 		int count = 0;
-		boolean flag = false;
-		TransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		int insertCount =  0;
+		String[] result = new String [2];
+		int uploaded = 0;
+		int updated = 0;
+		//TransactionDefinition def = new DefaultTransactionDefinition();
+		///TransactionStatus status = transactionManager.getTransaction(def);
+		NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		try {
-			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 			if(!StringUtils.isEmpty(bmw)) {
 				BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(bmw);
-					
 					 
-					String insertQry = "INSERT INTO [customers_master] " 
-							+ "(customer,serverTime,Registrationnumber,SA_STATUSBLOCK,SPCB_CD,NO_BEDS_INV,SD_Plantcode,SD_Plantname,NAME1,NAME_CO,STREET,CITY,POSTCODE,STATECODE,COUNTRY,LANGU,MOBILENUMBER,MAILID,CUSTOMERGROUP,AUFSD,ACTSERVICECERTFROMDATE,ACTSERVICECERTTODATE,SERVICESTARTDATE,"
-							+ "REGISTRATIONDATE,UPPERSLABINKG,RATEREVISIONPERIOD,RATEREVISION,LATLONGONPICKUPPOINT,CUSTOMERAGREEMENTFROM,CUSTOMERAGREEMENTTO,CUS_GRP,CUSTOMERFACILITY,CUSTOMERFACILITYTYPE,"
-							+ "CUSTOMERFREQUENCY,NOOFPICKUPLOCATION,ACTIVE_INACTIVE,SERVEDINMONTHORNOT,NOOFDAYSSERVEDINMONTH)"
+				String checkingLogQry = "SELECT count(*) from [customers_master] where customer = ? ";
+				count = jdbcTemplate.queryForObject(checkingLogQry, new Object[] {bmw.getCustomer()}, Integer.class);
+			
+				if(count == 0) {
+					 String insertQry = "INSERT into  customers_master "
+							+ "(customer,serverTime,Registrationnumber,SA_STATUSBLOCK,SPCB_CD,NO_BEDS_INV,SD_Plantcode,SD_Plantname,NAME1,NAME_CO,STREET,CITY,POSTCODE,STATECODE,COUNTRY,LANGU,MOBILENUMBER,MAILID,"
+							+ "CUSTOMERGROUP,AUFSD,ACTSERVICECERTFROMDATE,ACTSERVICECERTTODATE,SERVICESTARTDATE,"
+							+ "REGISTRATIONDATE,UPPERSLABINKG,RATEREVISIONPERIOD,RATEREVISION,LATLONGONPICKUPPOINT,CUSTOMERAGREEMENTFROM,CUSTOMERAGREEMENTTO,"
+							+ "CUS_GRP,CUSTOMERFACILITY,CUSTOMERFACILITYTYPE,"
+							+ "CUSTOMERFREQUENCY,NOOFPICKUPLOCATION,ACTIVE_INACTIVE,NOOFDAYSSERVEDINMONTH,CHNGIND,created_date,BATCHID,EXECUTIVE_EMAIL,EXECUTIVE_CONTACT,SAPCREATEDT,UDATE)"
 							+ " VALUES"
 							+ " (:customer,getdate(),:Registrationnumber,:SA_STATUSBLOCK,:SPCB_CD,:NO_BEDS_INV,:SD_Plantcode,:SD_Plantname,:NAME1,:NAME_CO,:STREET,:CITY,:POSTCODE,:STATECODE,:COUNTRY,:LANGU,:MOBILENUMBER,:MAILID,:CUSTOMERGROUP,:AUFSD,:ACTSERVICECERTFROMDATE,:ACTSERVICECERTTODATE,:SERVICESTARTDATE,"
 							+ ":REGISTRATIONDATE,:UPPERSLABINKG,:RATEREVISIONPERIOD,:RATEREVISION,:LATLONGONPICKUPPOINT,:CUSTOMERAGREEMENTFROM,:CUSTOMERAGREEMENTTO,:CUS_GRP,:CUSTOMERFACILITY,:CUSTOMERFACILITYTYPE,"
-							+ ":CUSTOMERFREQUENCY,:NOOFPICKUPLOCATION,:ACTIVE_INACTIVE,:SERVEDINMONTHORNOT,:NOOFDAYSSERVEDINMONTH)";
-					
+							+ ":CUSTOMERFREQUENCY,:NOOFPICKUPLOCATION,:ACTIVE_INACTIVE,:NOOFDAYSSERVEDINMONTH,:CHNGIND,getdate(),:BATCHID,:EXECUTIVE_EMAIL,:EXECUTIVE_CONTACT,:SAPCREATEDT,:UDATE); ";
+					 
+					 	paramSource = new BeanPropertySqlParameterSource(bmw);	 
+					 	insertCount =   namedParamJdbcTemplate.update(insertQry, paramSource);
+						uploaded++;
+				}else if(count > 0){
+					String updateQry =" UPDATE customers_master SET Registrationnumber = :Registrationnumber, SA_STATUSBLOCK = :SA_STATUSBLOCK, SPCB_CD = :SPCB_CD, NO_BEDS_INV = :NO_BEDS_INV, "
+								+ "	SD_Plantcode = :SD_Plantcode "
+								+ "	, SD_Plantname = :SD_Plantname, NAME1 = :NAME1, NAME_CO = :NAME_CO, "
+								+ "	STREET = :STREET, CITY = :CITY "
+								+ "	, POSTCODE = :POSTCODE, STATECODE = :STATECODE, COUNTRY = :COUNTRY, LANGU = :LANGU, "
+								+ "	MOBILENUMBER = :MOBILENUMBER "
+								+ "	, MAILID = :MAILID, CUSTOMERGROUP = :CUSTOMERGROUP, AUFSD = :AUFSD,  "
+								+ "	ACTSERVICECERTFROMDATE = :ACTSERVICECERTFROMDATE, ACTSERVICECERTTODATE = :ACTSERVICECERTTODATE, SERVICESTARTDATE = :SERVICESTARTDATE,  "
+								+ "	REGISTRATIONDATE = :REGISTRATIONDATE,UPPERSLABINKG = :UPPERSLABINKG,RATEREVISIONPERIOD = :RATEREVISIONPERIOD ,"
+								+ "	RATEREVISION = :RATEREVISION,LATLONGONPICKUPPOINT = :LATLONGONPICKUPPOINT,  "
+								+ "	CUSTOMERAGREEMENTFROM = :CUSTOMERAGREEMENTFROM,CUSTOMERAGREEMENTTO = :CUSTOMERAGREEMENTTO,  "
+								+ "	CUS_GRP = :CUS_GRP,CUSTOMERFACILITY = :CUSTOMERFACILITY , "
+								+ "	CUSTOMERFACILITYTYPE = :CUSTOMERFACILITYTYPE,ACTIVE_INACTIVE = :ACTIVE_INACTIVE,  "
+								+ "	CUSTOMERFREQUENCY = :CUSTOMERFREQUENCY,NOOFPICKUPLOCATION = :NOOFPICKUPLOCATION , "
+								+ "	NOOFDAYSSERVEDINMONTH = :NOOFDAYSSERVEDINMONTH,UDATE= :UDATE,  "
+								+ "	CHNGIND = :CHNGIND,BATCHID = :BATCHID,  "
+								+ "	EXECUTIVE_EMAIL = :EXECUTIVE_EMAIL,updated_date = getdate(),  "
+								+ "	EXECUTIVE_CONTACT = :EXECUTIVE_CONTACT where customer= :customer ";
 					paramSource = new BeanPropertySqlParameterSource(bmw);	 
-				    count = namedParamJdbcTemplate.update(insertQry, paramSource);
-				  if(count > 0) {
-					  flag = true;
+				    namedParamJdbcTemplate.update(updateQry, paramSource);
+					updated++;
+				}
+				  if(count > 0 || insertCount > 0) {
+					    bmw.setMsg("Data Uploded Successfully");
+					    bmw.setStatus("Success");
+					    String insertLogQry = "INSERT into  customerMaster_logs "
+								+ "(BATCHID,log_recordedTime,status,MSG)"
+								+ " VALUES"
+								+ " (:BATCHID,getdate(),:status,:msg); ";
+						 
+						 	paramSource = new BeanPropertySqlParameterSource(bmw);	 
+						    namedParamJdbcTemplate.update(insertLogQry, paramSource);
 				  }
 				}
-			
-			transactionManager.commit(status);
+			String stringUpload = String.valueOf(uploaded);
+			String stringUpdate = String.valueOf(updated);
+			result[0] = stringUpload;
+			result[1] = stringUpdate;
+			//transactionManager.commit(status);
 		}catch (Exception e) {
-			transactionManager.rollback(status);
+		//	transactionManager.rollback(status);
 			e.printStackTrace();
+			    bmw.setMsg(e.getMessage());
+			    bmw.setStatus("Error");
+			    String insertLogQry = "INSERT into  customerMaster_logs "
+						+ "(BATCHID,log_recordedTime,status,MSG)"
+						+ " VALUES"
+						+ " (:BATCHID,getdate(),:status,:msg); ";
+				 
+			    BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(bmw);	 
+			    namedParamJdbcTemplate.update(insertLogQry, paramSource);
 			throw new SQLException(e.getMessage());
 			
 		}
-		return flag;
+		return result;
 	}
 
 	public String uploadData(String url, BMW bmw) {
@@ -407,39 +460,72 @@ public class BMWDao {
 		try {
 			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 			BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(dB);		 
-			int arrSize1 = 0;
+			
+			
+			String ERQ2 = "  UPDATE ALL_BMW_Sites.dbo.bmw_detailed SET [plant] = LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(REPLACE([plant], "
+					+ "CHAR(10), CHAR(32)), CHAR(13), CHAR(32)), CHAR(160), CHAR(32)),CHAR(9),CHAR(32))))";
+			paramSource = new BeanPropertySqlParameterSource(obj);	 
+			namedParamJdbcTemplate.update(ERQ2, paramSource);
+			
+			String ERQ3 = "  UPDATE ALL_BMW_Sites.dbo.bmw_detailed SET [CustomerSAPCode] = LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(REPLACE([CustomerSAPCode], "
+					+ "CHAR(10), CHAR(32)), CHAR(13), CHAR(32)), CHAR(160), CHAR(32)),CHAR(9),CHAR(32))))";
+			paramSource = new BeanPropertySqlParameterSource(obj);	 
+			namedParamJdbcTemplate.update(ERQ3, paramSource);
+			
+			String ERQ = "  UPDATE [MasterDB].[dbo].[master_table] SET [project_code] = LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(REPLACE([project_code], "
+					+ "CHAR(10), CHAR(32)), CHAR(13), CHAR(32)), CHAR(160), CHAR(32)),CHAR(9),CHAR(32))))";
+			paramSource = new BeanPropertySqlParameterSource(obj);	 
+			namedParamJdbcTemplate.update(ERQ, paramSource);
+			
+			String ERQ1 = "  UPDATE [MasterDB].[dbo].[master_table] SET [project_name] = LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(REPLACE([project_name], "
+					+ "CHAR(10), CHAR(32)), CHAR(13), CHAR(32)), CHAR(160), CHAR(32)),CHAR(9),CHAR(32))))";
+			paramSource = new BeanPropertySqlParameterSource(obj);	 
+			namedParamJdbcTemplate.update(ERQ1, paramSource);
+			
+			
 		    String qry = "  SELECT (select profit_center from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS profit_center,		  "
 		    		+ "		(select profit_center_name from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS profit_center_name,  "
 		    		+ "		(select project_code from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS project_code,  "
 		    		+ "		 MAX(d.plant) AS plant_name,max(CustomerCABSCode) as customerId, "
-		    		+ "		  (select count(CustomerStatus) from ALL_BMW_Sites.dbo.bmw_detailed  "
-		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) ) AS totalVisits,  "
+		    		+ "		  (select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) ";
+		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
+				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
+					}
+		    		qry = qry +  ") AS totalVisits,  "
 		    		+ "				 SUM(TRY_CAST(TotalCount AS FLOAT )) as TotalCount,  "
 		    		+ "				 SUM(TRY_CAST(TotalWeight AS FLOAT )) as TotalWeight,  "
 		    		+ "				 MAX(d.company) AS company, "
 		    		+ "				 (select company_code from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS company_code,  "
-		    		+ "(select count(CustomerStatus) from ALL_BMW_Sites.dbo.bmw_detailed  "
-		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) and CustomerStatus = 'true') AS ActiveVistis,  "
-		    		+ "(select count(CustomerStatus) from ALL_BMW_Sites.dbo.bmw_detailed  "
-		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) and CustomerStatus = 'false') AS incativeVisits, "
+		    		+ "(select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) and CustomerStatus = 'true'"
+		    		;
+		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
+				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
+					}
+		    		qry = qry + ") AS ActiveVistis,  "
+		    		+ "(select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) and CustomerStatus = 'false'"
+		    		;
+		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
+				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
+					}
+		    		qry = qry + ") AS incativeVisits, "
 		    		+ "				 MAX(d.plant) AS plant_name,				MAX(d.TypeofEstablishment) AS TypeofEstablishment,			  "
 		    		+ "				 MAX(d.ServiceFrequency) AS ServiceFrequency,				MAX(d.ActualVisitMonth) AS ActualVisitMonth,	  "
 		    		+ "				 MAX(d.CustomerStatus) AS CustomerStatus,CustomerSAPCode as customerID   "
 		    		+ "				FROM ALL_BMW_Sites.dbo.bmw_detailed d   "
-		    		+ "				left join [MasterDB].[dbo].[master_table] m on m.company = d.company "
+		    		+ "				left join [MasterDB].[dbo].[master_table] m on m.project_name = d.plant 		 "
 		    		+ "				 where CustomerSAPCode is not null ";
 			
 		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getProject_code())) {
-		    	qry = qry + "and  m.project_code like '%"+dB.getProject_code()+"%'";
-		    	arrSize1++;
+		    	qry = qry + "and  m.project_code = '"+dB.getProject_code()+"'";
 			}
 		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getCustomerSAPCode())) {
-		    	qry = qry + " AND d.CustomerSAPCode like '%"+dB.getCustomerSAPCode()+"%'";
-		    	arrSize1++;
+		    	qry = qry + " AND d.CustomerSAPCode = '"+dB.getCustomerSAPCode()+"'";
 			}
 		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
 		    	qry = qry + " AND d.ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
-		    	arrSize1++;
 			}
 			qry = qry +"  group by CustomerSAPCode,ActualVisitMonth "; 
 			

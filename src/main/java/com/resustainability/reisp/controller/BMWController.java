@@ -3,11 +3,14 @@ package com.resustainability.reisp.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.InetAddress;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -219,16 +222,20 @@ public class BMWController {
 	@JsonProperty
 	public String uploadBMWList(@RequestHeader("Authorization") String authentication,  @RequestBody List<BMW> obja, BMW obj1,BrainBox obj,HttpSession session,HttpServletResponse response , Errors filterErrors) throws JsonProcessingException {
 		 String json = null;
+		 String jsone = "";
 		 boolean call_service = true;
 		 boolean log = true;
 		 int logInfo = 0;
+		 int totalCounts = 0;
 		 String  ids = "";
 		 HashMap<String, String> data = new HashMap<String, String>();
+		 HashMap<String, String> datae = new HashMap<String, String>();
 		 ObjectMapper objectMapper = new ObjectMapper();
 		 objectMapper.setPropertyNamingStrategy(new LowercasePropertyNamingStrategy());
+		 String id = null;
 		try {
 			boolean flag = false; 
-			int totalCounts = 0;
+			
 			 String user_id1 = "recgwbsap";
 			 String password1 = "X1298extvbddyzB";
 			 String pair=new String(Base64.decodeBase64(authentication.substring(6)));
@@ -241,30 +248,62 @@ public class BMWController {
 		     String newIp = ip.getHostAddress();
 			 String Myip = "10.100.3.11";
 			 flag = true;
-			
+			String [] result = null;
 				obj1.setPTC_status(null);
 			 if(flag ) {
-				 if(!user_id1.contentEquals(obj1.getUser_id()) || !password1.contentEquals(obj1.getPassword())) {
+				 if(!user_id1.contentEquals(obj1.getUser_id()) || !password1.contentEquals(obj1.getPassword())) {			
 					 call_service = false;
 					 data = new HashMap<String, String>();
 					 data.put("500","User Name or Password Incorrect!");
 					 json = objectMapper.writeValueAsString(data);
 					 obj1.setMsg("User Name or Password Incorrect!");
 				 }
-				 String id = null;
+				boolean errorFlag = false;
 				 obj1.setUser_ip(newIp);
 				 if(call_service) {
-					 for(BMW bmw : obja) {
-						 id = bmw.getCustomer();
-						 ids = "["+id+"]"+ids;
-				    	 totalCounts++;
-						 flag  = service.uploadBMWList(bmw,obj,obja,response);
-						 if(flag ) {
-							 data = new HashMap<String, String>();
-							 data.put("Success", totalCounts+" Records Inserted & Last Inserted ID => "+ids);
-							json = objectMapper.writeValueAsString(data);
+					 int error = 0;
+					 int updated = 0;
+					 int uploaded = 0;
+					 String msg = "Success";
+					 for(BMW bmw : obja) { 
+						
+						 if("0000-00-00".equals(bmw.getaCTSERVICECERTFROMDATE())) {
+								bmw.setaCTSERVICECERTFROMDATE(null);
+							}
+							if("0000-00-00".equals(bmw.getaCTSERVICECERTTODATE())) {
+								bmw.setaCTSERVICECERTTODATE(null);
+							}
+							if("0000-00-00".equals(bmw.getsERVICESTARTDATE())) {
+								bmw.setsERVICESTARTDATE(null);
+							}
+						 try {
+							 result  = service.uploadBMWList(bmw,obj,obja,response);
+							 uploaded = uploaded + Integer.parseInt(result[0]);
+							 updated = updated + Integer.parseInt(result[1]);
+							
+						 }catch(Exception e) {
+							 error++;
+							 id = bmw.getCustomer();
+							 ids = id+","+ids;
+							 ids = ids.replaceFirst("^,", "");
+							 ids = ids.replaceAll(",$", "."); 
+							 jsone = " An Error At Customer ID : "+ ids;
+							 datae.put("Success", "Total("+obja.size()+") Records Recieved, ("+uploaded+")Uploaded, ("+updated+")Updated & ("+error+")errors for BatchID => "+bmw.getBATCHID());
+							 datae.put("Error", jsone);						
+							 //json = objectMapper.writeValueAsString(datae);
+							 json = convertMapToJson(datae);
+							 msg = "Error";
+							 errorFlag = true;
+							 continue;
 						 }
-						 
+						 totalCounts++;
+							 data = new HashMap<String, String>();
+							// data.put("Success", obja.size()+" Records Effected & Last Inserted => "+ids+" for BatchID => "+bmw.getBATCHID());
+							 data.put("Success", "Total("+obja.size()+") Records Recieved, ("+uploaded+")Uploaded, ("+updated+")Updated & ("+error+")errors for BatchID => "+bmw.getBATCHID());
+							 if(errorFlag) {
+								 data.put("Error", jsone);
+							 }							
+							 json = convertMapToJson(data);
 					}
 				 }
 			 }else {
@@ -274,7 +313,6 @@ public class BMWController {
 			     json = objectMapper.writeValueAsString(data);
 			     obj1.setMsg("No Access for this IP Address"+ " : "+newIp);
 			 }
-		  
 		}catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
@@ -289,14 +327,25 @@ public class BMWController {
 			}
 			else {
 				data = new HashMap<String, String>();
-				data.put("500",getStackTraceAsString(e));
+				data.put("500","An Issue Found at Customer ID : "+ id+" & "+totalCounts+" Records for BatchID => "+obja.get(0).getBATCHID());
 				json = objectMapper.writeValueAsString(data);
 			}
 			logger.error("uploadBMWList : " + e.getMessage());
 		}
 		return json;
 	}
+	static String convertMapToJson(Map<String, String> map) {
+        try {
+            // Create ObjectMapper instance
+            ObjectMapper objectMapper = new ObjectMapper();
 
+            // Convert the Map to JSON string
+            return objectMapper.writeValueAsString(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{}"; // Return an empty JSON object in case of an error
+        }
+    }
 	@RequestMapping(value = "/rfid", method = {RequestMethod.GET,RequestMethod.POST},produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@JsonProperty

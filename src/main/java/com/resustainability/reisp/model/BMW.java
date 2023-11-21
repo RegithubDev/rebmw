@@ -19,8 +19,94 @@ private String company,plant,CustomerDistrict,user_id,password,repulled,user_ip,
 
 kUNNR,nAME1,nAME_CO,sTREET,cITY,pOSTCODE,sTATECODE,cOUNTRY,lANGU,mOBILENUMBER,mAILID,cUSTOMERGROUP,aUFSD,aCTSERVICECERTFROMDATE,aCTSERVICECERTTODATE,sERVICESTARTDATE,
 rEGISTRATIONDATE,uPPERSLABINKG,rATEREVISIONPERIOD,rATEREVISION,lATLONGONPICKUPPOINT,cUSTOMERAGREEMENTFROM,cUSTOMERAGREEMENTTO,cUS_GRP,cUSTOMERFACILITY,cUSTOMERFACILITYTYPE,
-cUSTOMERFREQUENCY,nOOFPICKUPLOCATION,aCTIVE_INACTIVE,sERVEDINMONTHORNOT,nOOFDAYSSERVEDINMONTH,SA_STATUSBLOCK,Plantname,CustomerID,ActualMonthAndYear
+cUSTOMERFREQUENCY,nOOFPICKUPLOCATION,aCTIVE_INACTIVE,sERVEDINMONTHORNOT,nOOFDAYSSERVEDINMONTH,SA_STATUSBLOCK,Plantname,CustomerID,ActualMonthAndYear,BATCHID,created_date
+,updated_date,CHNGIND,EXECUTIVE_EMAIL,EXECUTIVE_CONTACT,log_recordedTime,	status,SAPCREATEDT,UDATE
 ;
+
+@JsonProperty("SAPCREATEDT")
+public String getSAPCREATEDT() {
+	return SAPCREATEDT;
+}
+
+public void setSAPCREATEDT(String sAPCREATEDT) {
+	SAPCREATEDT = sAPCREATEDT;
+}
+@JsonProperty("UDATE")
+public String getUDATE() {
+	return UDATE;
+}
+
+public void setUDATE(String uDATE) {
+	UDATE = uDATE;
+}
+
+public String getLog_recordedTime() {
+	return log_recordedTime;
+}
+
+public void setLog_recordedTime(String log_recordedTime) {
+	this.log_recordedTime = log_recordedTime;
+}
+
+public String getStatus() {
+	return status;
+}
+
+public void setStatus(String status) {
+	this.status = status;
+}
+
+@JsonProperty("EXECUTIVE_EMAIL")
+public String getEXECUTIVE_EMAIL() {
+	return EXECUTIVE_EMAIL;
+}
+
+public void setEXECUTIVE_EMAIL(String eXECUTIVE_EMAIL) {
+	EXECUTIVE_EMAIL = eXECUTIVE_EMAIL;
+}
+@JsonProperty("EXECUTIVE_CONTACT")
+public String getEXECUTIVE_CONTACT() {
+	return EXECUTIVE_CONTACT;
+}
+
+public void setEXECUTIVE_CONTACT(String eXECUTIVE_CONTACT) {
+	EXECUTIVE_CONTACT = eXECUTIVE_CONTACT;
+}
+
+@JsonProperty("BATCHID")
+public String getBATCHID() {
+	return BATCHID;
+}
+
+public void setBATCHID(String bATCHID) {
+	BATCHID = bATCHID;
+}
+
+public String getCreated_date() {
+	return created_date;
+}
+
+public void setCreated_date(String created_date) {
+	this.created_date = created_date;
+}
+
+public String getUpdated_date() {
+	return updated_date;
+}
+
+public void setUpdated_date(String updated_date) {
+	this.updated_date = updated_date;
+}
+
+@JsonProperty("CHNGIND")
+public String getCHNGIND() {
+	return CHNGIND;
+}
+
+public void setCHNGIND(String cHNGIND) {
+	CHNGIND = cHNGIND;
+}
+
 @JsonProperty("Plantname")
 public String getPlantname() {
 	return Plantname;

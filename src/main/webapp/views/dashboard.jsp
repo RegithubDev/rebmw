@@ -575,7 +575,7 @@
     <div class="col-12">
       <div class="card invoice-list-wrapper">
         <div class="card-datatable table-responsive">
-          <table class="invoice-list-table table">
+          <table class="invoice-list-table table is-zebra w-full text-left">
             <thead>
               <tr>
                 <th></th>

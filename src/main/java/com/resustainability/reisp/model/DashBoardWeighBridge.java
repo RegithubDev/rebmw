@@ -4,8 +4,8 @@ import java.util.List;
 
 public class DashBoardWeighBridge {
 
-	private String   UID,plant,cabsTransID,actualVisitDate,indicator_name,uniqueAPIIDs,
-	route,customerTown,vehicleRegNo,aPIType,aPIID,visitDayTime,PTCDT1
+	private String   UID,plant,cabsTransID,actualVisitDate,indicator_name,uniqueAPIIDs,user_id,password,
+	route,customerTown,vehicleRegNo,aPIType,aPIID,visitDayTime,PTCDT1,syncDate,syncTime,date
 		      ,TRNO,VEHICLENO,MATERIAL,count,min,dmNmae,days_diff,PARTY,all_wb,all_sites,visitDays,customerStatus,TRANSPORTER,curDAte,BILLDCNO,BILLWEIGHT,DATEIN,TIMEIN,FIRSTWEIGHT,USER1,DATEOUT,TIMEOUT,SECONDWEIGHT,USER2,SITEID,STATUS,FIRSTFRONTPOTO
 		   ,FIRSTBACKPOTO,SECONDFRONTPOTO,SECONDBACKPOTO,NETWT,SW_SITEID,TRIPNO,SHIFTNO,TRANSFERWASTEIE ,TRANSFERWASTE,MANIFESTNUMBER ,MANIFESTWEIGHT,MEMBERSHIPCODE
 		   ,INGATEPASSNO ,INMETERREADING,OUTGATEPASSNO,OUTMETERREADING ,TRANSFERID,TYPEOFWASTE,TOTALKMSTRAVELLED ,BILLABLEWEIGHT,TOTALTRANSPORTCHARGES ,BARCODENUM
@@ -55,13 +55,181 @@ public class DashBoardWeighBridge {
 		    	    	    	    	      ,ServerDateTime
 		    	    	    	    	      ,APIType
 		    	    	    	    	      ,CabsTransID
-		    	    	    	    	      ,APIID
+		    	    	    	    	      ,APIID,repulled
 		    	    	    	    	      ,CustomerStatus,ActualVisitMonthR,profit_center
 		    	    	    	    	      ,profit_center_name,
-		    	    	    	    	      company_code,CustomerCode,plant_name,no_of_visits,visitsPerMonth,last_modified;
+		    	    	    	    	      company_code,CustomerCode,plant_name,no_of_visits,visitsPerMonth,last_modified,TransactionNo1,TransactionNo2,Transporter,Transferstation,VehicleNo,Zone,Location,DateIN,TimeIN,DateOUT,TimeOUT,GROSSWeight,SiteID,TareWeight,NetWeight,TypeofMaterial;
 	
 	List<DashBoardWeighBridge> transactionsList;
 	
+
+	public String getTransactionNo1() {
+		return TransactionNo1;
+	}
+
+	public String getTransactionNo2() {
+		return TransactionNo2;
+	}
+
+	public String getTransporter() {
+		return Transporter;
+	}
+
+	public String getTransferstation() {
+		return Transferstation;
+	}
+
+	public String getVehicleNo() {
+		return VehicleNo;
+	}
+
+	public String getZone() {
+		return Zone;
+	}
+
+	public String getDateIN() {
+		return DateIN;
+	}
+
+	public String getTimeIN() {
+		return TimeIN;
+	}
+
+	public String getDateOUT() {
+		return DateOUT;
+	}
+
+	public String getTimeOUT() {
+		return TimeOUT;
+	}
+
+	public String getGROSSWeight() {
+		return GROSSWeight;
+	}
+
+	public String getSiteID() {
+		return SiteID;
+	}
+
+	public String getTareWeight() {
+		return TareWeight;
+	}
+
+	public String getNetWeight() {
+		return NetWeight;
+	}
+
+	public String getTypeofMaterial() {
+		return TypeofMaterial;
+	}
+
+	public void setTransactionNo1(String transactionNo1) {
+		TransactionNo1 = transactionNo1;
+	}
+
+	public void setTransactionNo2(String transactionNo2) {
+		TransactionNo2 = transactionNo2;
+	}
+
+	public void setTransporter(String transporter) {
+		Transporter = transporter;
+	}
+
+	public void setTransferstation(String transferstation) {
+		Transferstation = transferstation;
+	}
+
+	public void setVehicleNo(String vehicleNo) {
+		VehicleNo = vehicleNo;
+	}
+
+	public void setZone(String zone) {
+		Zone = zone;
+	}
+
+	public void setDateIN(String dateIN) {
+		DateIN = dateIN;
+	}
+
+	public void setTimeIN(String timeIN) {
+		TimeIN = timeIN;
+	}
+
+	public void setDateOUT(String dateOUT) {
+		DateOUT = dateOUT;
+	}
+
+	public void setTimeOUT(String timeOUT) {
+		TimeOUT = timeOUT;
+	}
+
+	public void setGROSSWeight(String gROSSWeight) {
+		GROSSWeight = gROSSWeight;
+	}
+
+	public void setSiteID(String siteID) {
+		SiteID = siteID;
+	}
+
+	public void setTareWeight(String tareWeight) {
+		TareWeight = tareWeight;
+	}
+
+	public void setNetWeight(String netWeight) {
+		NetWeight = netWeight;
+	}
+
+	public void setTypeofMaterial(String typeofMaterial) {
+		TypeofMaterial = typeofMaterial;
+	}
+
+	public String getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getRepulled() {
+		return repulled;
+	}
+
+	public void setRepulled(String repulled) {
+		this.repulled = repulled;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getSyncDate() {
+		return syncDate;
+	}
+
+	public void setSyncDate(String syncDate) {
+		this.syncDate = syncDate;
+	}
+
+	public String getSyncTime() {
+		return syncTime;
+	}
+
+	public void setSyncTime(String syncTime) {
+		this.syncTime = syncTime;
+	}
 
 	public String getTotalVisits() {
 		return TotalVisits;

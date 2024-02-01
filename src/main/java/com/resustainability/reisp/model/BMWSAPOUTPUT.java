@@ -2,14 +2,32 @@ package com.resustainability.reisp.model;
 
 public class BMWSAPOUTPUT {
 
-	private String customerId,	TotalVisits,	ActiveVistis,	incativeVisits,	TotalWeight;
+	private String customerId,	TotalVisits,	ActiveVisits,	inactiveVistis,InactiveVisits,	TotalWeight;
 
-	public String getIncativeVisits() {
-		return incativeVisits;
+
+
+	public String getInactiveVisits() {
+		return InactiveVisits;
 	}
 
-	public void setIncativeVisits(String incativeVisits) {
-		this.incativeVisits = incativeVisits;
+	public void setInactiveVisits(String inactiveVisits) {
+		InactiveVisits = inactiveVisits;
+	}
+
+	public String getActiveVisits() {
+		return ActiveVisits;
+	}
+
+	public void setActiveVisits(String activeVisits) {
+		ActiveVisits = activeVisits;
+	}
+
+	public String getInactiveVistis() {
+		return inactiveVistis;
+	}
+
+	public void setInactiveVistis(String inactiveVistis) {
+		this.inactiveVistis = inactiveVistis;
 	}
 
 	public String getCustomerId() {
@@ -27,15 +45,6 @@ public class BMWSAPOUTPUT {
 	public void setTotalVisits(String totalVisits) {
 		TotalVisits = totalVisits;
 	}
-
-	public String getActiveVistis() {
-		return ActiveVistis;
-	}
-
-	public void setActiveVistis(String activeVistis) {
-		ActiveVistis = activeVistis;
-	}
-
 
 	public String getTotalWeight() {
 		return TotalWeight;

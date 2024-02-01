@@ -309,7 +309,7 @@ body {
        <div class="dt-buttons" style="height : 0.5em;">
       
         </div>
-          <table id="datatable-company" class="invoice-list-table table">
+          <table id="datatable-company" class="invoice-list-table table is-zebra w-full text-left">
             <thead>
               <tr>
                 <th>#</th>

@@ -20,8 +20,24 @@ private String company,plant,CustomerDistrict,user_id,password,repulled,user_ip,
 kUNNR,nAME1,nAME_CO,sTREET,cITY,pOSTCODE,sTATECODE,cOUNTRY,lANGU,mOBILENUMBER,mAILID,cUSTOMERGROUP,aUFSD,aCTSERVICECERTFROMDATE,aCTSERVICECERTTODATE,sERVICESTARTDATE,
 rEGISTRATIONDATE,uPPERSLABINKG,rATEREVISIONPERIOD,rATEREVISION,lATLONGONPICKUPPOINT,cUSTOMERAGREEMENTFROM,cUSTOMERAGREEMENTTO,cUS_GRP,cUSTOMERFACILITY,cUSTOMERFACILITYTYPE,
 cUSTOMERFREQUENCY,nOOFPICKUPLOCATION,aCTIVE_INACTIVE,sERVEDINMONTHORNOT,nOOFDAYSSERVEDINMONTH,SA_STATUSBLOCK,Plantname,CustomerID,ActualMonthAndYear,BATCHID,created_date
-,updated_date,CHNGIND,EXECUTIVE_EMAIL,EXECUTIVE_CONTACT,log_recordedTime,	status,SAPCREATEDT,UDATE
+,updated_date,CHNGIND,EXECUTIVE_EMAIL,EXECUTIVE_CONTACT,log_recordedTime,	status,SAPCREATEDT,UDATE,weekdays,RT_CD_BIL
 ;
+@JsonProperty("weekdays")
+public String getWeekdays() {
+	return weekdays;
+}
+
+public void setWeekdays(String weekdays) {
+	this.weekdays = weekdays;
+}
+@JsonProperty("RT_CD_BIL")
+public String getRT_CD_BIL() {
+	return RT_CD_BIL;
+}
+
+public void setRT_CD_BIL(String rT_CD_BIL) {
+	RT_CD_BIL = rT_CD_BIL;
+}
 
 @JsonProperty("SAPCREATEDT")
 public String getSAPCREATEDT() {

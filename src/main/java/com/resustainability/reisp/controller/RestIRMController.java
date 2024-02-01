@@ -71,6 +71,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.resustainability.reisp.common.DateParser;
@@ -80,9 +81,11 @@ import com.resustainability.reisp.constants.PageConstants;
 import com.resustainability.reisp.model.BMW;
 import com.resustainability.reisp.model.BMWSAP;
 import com.resustainability.reisp.model.BMWSAPOUTPUT;
+import com.resustainability.reisp.model.BrainBox;
 import com.resustainability.reisp.model.Company;
 import com.resustainability.reisp.model.DashBoardWeighBridge;
 import com.resustainability.reisp.model.IRM;
+import com.resustainability.reisp.model.Nagpur;
 import com.resustainability.reisp.model.Project;
 import com.resustainability.reisp.model.ProjectLocation;
 import com.resustainability.reisp.model.RoleMapping;
@@ -125,6 +128,93 @@ public class RestIRMController {
 	
 	@Autowired
 	BMWService service1;
+	
+
+	@RequestMapping(value = "/ajax/getNagpurList", method = {RequestMethod.GET,RequestMethod.POST},produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public String  getIRMList11(@RequestBody BMWSAP obj1, @RequestHeader("Authorization") String authentication,HttpSession session,HttpServletResponse response , Errors filterErrors) {
+		List<Nagpur> companiesList = new ArrayList<>();
+		String userId = null;
+		String json = null;
+		String role = null;
+		BrainBox obj = null;
+		int logInfo = 0;
+		HashMap<String, String> data = new HashMap<String, String>();
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			 boolean call_service = true;
+			userId = (String) session.getAttribute("USER_ID");
+			role = (String) session.getAttribute("BASE_ROLE");
+			 String user_id1 = "rechwbhingpr";
+			 String password1 = "X1298extvbddyzB";
+			 String pair=new String(Base64.decodeBase64(authentication.substring(6)));
+		     String userName=pair.split(":")[0];
+		     String password=pair.split(":")[1];
+		     obj1.setUser_id(userName);
+		     boolean log = true;
+		     obj1.setPassword(password);
+		    if(!user_id1.contentEquals(obj1.getUser_id()) || !password1.contentEquals(obj1.getPassword())) {
+				 call_service = false;
+				 data = new HashMap<String, String>();
+				 data.put("200","User Name or Password Incorrect!");
+				 json = objectMapper.writeValueAsString(data);
+				 obj1.setMSG("User Name or Password Incorrect!");
+			 }
+			 else if(StringUtils.isEmpty(obj1.getFrom_date())) {
+				 call_service = false;
+				 data = new HashMap<String, String>();
+				 data.put("200","Date not mentioned! Please mention this format : from_date : { m/d/yyyy }");
+				 json = objectMapper.writeValueAsString(data);
+				 obj1.setMSG("Date not mentioned!");
+			 }
+		     if(call_service) {
+		    	 companiesList = service1.getNagpurCNDList(obj1,obj,response);
+		    	 logInfo = service1.getLogInfo(obj1,obj,companiesList);
+		    	 if(companiesList.size() > 0 && logInfo == 0 ){
+					 json = objectMapper.writeValueAsString(companiesList);
+					 obj1.setMSG(companiesList.size()+" Data synched");
+					 obj1.setPTC_status("Y");
+					 log = true;
+				 }else if(companiesList.size() > 0 &&  logInfo == 0 && !StringUtils.isEmpty(obj1.getRepulled()) && "Yes".equalsIgnoreCase(obj1.getRepulled()) ){
+					 json = objectMapper.writeValueAsString(companiesList);
+					 obj1.setMSG(companiesList.size()+" Data synched");
+					 obj1.setPTC_status("Y");
+					 log = true;
+				 }else if(companiesList.size() > 0 &&  logInfo > 0 && !StringUtils.isEmpty(obj1.getRepulled()) && "Yes".equalsIgnoreCase(obj1.getRepulled()) ){
+					 json = objectMapper.writeValueAsString(companiesList);
+					 obj1.setMSG(companiesList.size()+" Data synched");
+					 obj1.setPTC_status("Y");
+					 log = true;
+				 }else if(companiesList.size() > 0 &&  logInfo > 0 && !StringUtils.isEmpty(obj1.getRepulled()) && "No".equalsIgnoreCase(obj1.getRepulled()) ){
+					 data = new HashMap<String, String>();
+					 data.put("200","Data Already pulled before! If you want to pull again Change header (repulled : Yes)");
+					 json = objectMapper.writeValueAsString(data);
+					 log = false;
+				 }else if(companiesList.size() > 0 &&  logInfo > 0 && StringUtils.isEmpty(obj1.getRepulled()) ){
+					 data = new HashMap<String, String>();
+					 data.put("200","Data Already pulled before! If you want to pull again, Add header (repulled : Yes)");
+					 json = objectMapper.writeValueAsString(data);
+					 log = false;
+				
+				 }else {
+					 companiesList = new ArrayList<Nagpur>(1);
+					 data = new HashMap<String, String>();
+					 data.put("200", "No New Records are Available For the Selected Date! Data Already pulled before! If you want to pull again, Add header (repulled : Yes)");
+						 json = objectMapper.writeValueAsString(data);
+						 obj1.setMSG("No New Records are Available For the Selected Date! Data Already pulled before! If you want to pull again, Add header (repulled : Yes)");
+				  }
+			 }else {
+				 companiesList = new ArrayList<Nagpur>(1);
+			 }
+		     if(log) {service1.getLogsOfResults(companiesList,obj1);}
+		    	
+			 
+		}catch (Exception e) {
+			e.printStackTrace();
+			logger.error("getIRMList : " + e.getMessage());
+		}
+		return json;
+	}
 	
 	
 	@RequestMapping(value = "/ajax/getSAPData", method = {RequestMethod.GET,RequestMethod.POST},produces=MediaType.APPLICATION_JSON_VALUE)

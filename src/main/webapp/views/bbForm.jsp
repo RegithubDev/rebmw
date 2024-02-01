@@ -303,7 +303,7 @@ tr td:last-child {
        <div class="dt-buttons" style="height : 0.5em;">
       
         </div>
-          <table id="datatable-bb" class="invoice-list-table table" style="width: 100%; font-size:90%">
+          <table id="datatable-bb" class="invoice-list-table table is-zebra w-full text-left" style="width: 100%; font-size:90%">
             <thead>
               <tr>
                 <th>#</th>

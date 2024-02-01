@@ -53,6 +53,10 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter{
 				
 				 return true;
 			}
+			if(requestURI.equals("/"+context_path+"/reone/getNagpurList") &&  !requestURI.equals("/"+context_path+"/login")) {
+				
+				 return true;
+			}
 			if( !requestURI.equals("/"+context_path+"/") && !requestURI.equals("/"+context_path+"/reone/getMSWBilaspurList") ){
 				String Myip = Inet4Address.getLocalHost().getHostAddress();
 				String IP [] = {"10.11.10.102","122.168.198.195","34.93.149.251",Myip}; 

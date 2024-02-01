@@ -14,6 +14,7 @@ import com.resustainability.reisp.model.BMWSAP;
 import com.resustainability.reisp.model.BMWSAPOUTPUT;
 import com.resustainability.reisp.model.BrainBox;
 import com.resustainability.reisp.model.DashBoardWeighBridge;
+import com.resustainability.reisp.model.Nagpur;
 import com.resustainability.reisp.model.SBU;
 
 @Service
@@ -26,12 +27,12 @@ public class BMWService {
 		return dao.getHydCNDList(obj1,obj,response);
 	}
 
-	public Object getLogsOfResults(List<BrainBox> hydList, SBU obj1) throws Exception{
-		return dao.getLogsOfResults(hydList,obj1);
+	public Object getLogsOfResults(List<Nagpur> companiesList, BMWSAP obj1) throws Exception{
+		return dao.getLogsOfResults(companiesList,obj1);
 		
 	}
 
-	public int getLogInfo(SBU obj1, BrainBox obj, List<BrainBox> companiesList) throws SQLException {
+	public int getLogInfo(BMWSAP obj1, BrainBox obj, List<Nagpur> companiesList) throws SQLException {
 		return dao.getLogInfo(obj1,obj,companiesList);
 		
 	}
@@ -54,5 +55,22 @@ public class BMWService {
 
 	public List<BMWSAPOUTPUT> getTransactionsSummeryList(BMWSAP obj, BMWSAP dB) throws Exception{
 		return dao.getTransactionsSummeryList(obj,dB);
+	}
+
+	public List<DashBoardWeighBridge> getSpacesOutFromTablesList(BMWSAP object) throws Exception{
+		return dao.getSpacesOutFromTablesList(object);
+	}
+	
+	public List<Nagpur> getNagpurCNDList(BMWSAP obj1, BrainBox obj, HttpServletResponse response) throws SQLException{
+		return dao.getNagpurCNDList(obj1,obj,response);
+	}
+
+	public int getLogInfo(DashBoardWeighBridge obj1, BrainBox obj, List<BrainBox> companiesList) throws SQLException{
+		return dao.getLogInfo(obj1,obj,companiesList);
+	}
+
+	public Object getLogsOfResults(List<BrainBox> companiesList, DashBoardWeighBridge obj1) throws SQLException{
+		return dao.getLogsOfResults(companiesList,obj1);
+		
 	}
 }

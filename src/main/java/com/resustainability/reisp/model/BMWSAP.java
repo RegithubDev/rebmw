@@ -4,7 +4,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BMWSAP {
 
-	private String id,plant_name,TotalWeight,project_code,month,year,password,user_id,period,CustomerCode,TotalVisits,status,CustomerSAPCode,ActualVisitMonth,MSG,pull_datetime,plant,ActiveVistis,incativeVistis,customerId,Plantname,CustomerID,ActualMonthAndYear;
+	private String id,plant_name,TotalWeight,repulled,PTC_status,project_code,month,year,password,user_id,period,CustomerCode,from_date,TotalVisits,status,CustomerSAPCode,ActualVisitMonth,MSG,pull_datetime,plant,ActiveVistis,incativeVistis,customerId,Plantname,CustomerID,ActualMonthAndYear;
+	
+	public String getRepulled() {
+		return repulled;
+	}
+
+	public void setRepulled(String repulled) {
+		this.repulled = repulled;
+	}
+
+	public String getPTC_status() {
+		return PTC_status;
+	}
+
+	public void setPTC_status(String pTC_status) {
+		PTC_status = pTC_status;
+	}
+
+	public String getFrom_date() {
+		return from_date;
+	}
+
+	public void setFrom_date(String from_date) {
+		this.from_date = from_date;
+	}
+
 	public String getPlant() {
 		return plant;
 	}

@@ -375,7 +375,7 @@ mdl-cell mdl-cell--6-col{
        <div class="dt-buttons" style="height : 0.5em;">
        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCompany" style="position: relative; top: 1em;">Add Company</button>
         </div>
-          <table id="datatable-company" class="invoice-list-table table">
+          <table id="datatable-company" class="invoice-list-table table is-zebra w-full text-left">
             <thead>
               <tr>
                 <th>#</th>

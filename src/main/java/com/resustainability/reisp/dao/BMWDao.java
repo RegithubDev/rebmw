@@ -30,6 +30,7 @@ import com.resustainability.reisp.model.BMWSAP;
 import com.resustainability.reisp.model.BMWSAPOUTPUT;
 import com.resustainability.reisp.model.BrainBox;
 import com.resustainability.reisp.model.DashBoardWeighBridge;
+import com.resustainability.reisp.model.Nagpur;
 import com.resustainability.reisp.model.SBU;
 
 @Repository
@@ -96,17 +97,16 @@ public class BMWDao {
 		return menuList;
 	}
 
-	public Object getLogsOfResults(List<BrainBox> hydList, SBU obj1) throws SQLException {
+	public Object getLogsOfResults(List<Nagpur> companiesList, BMWSAP obj1) throws SQLException {
 		int count = 0;
 		try {
 			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-			if(hydList.size() > 0) {
-				for(BrainBox obj : hydList) {
+			if(companiesList.size() > 0) {
+				for(Nagpur obj : companiesList) {
 					obj.setGROSSWeight(obj1.getPTC_status());
 					obj.setTareWeight(obj1.getMSG());
-					obj.setDateOUT(obj1.getUser_ip());					
-					String insertQry = "INSERT INTO [hyd_logs] (user_ip,weight_TRNO,VEHICLENO,PTC_status,PTCDT,MSG)"
-							+ " values (:dateOUT,:TransactionNo2,:VehicleNo,:GROSSWeight,GETDATE(),:TareWeight)  ";
+					String insertQry = "INSERT INTO [All_CnD_Sites].[dbo].[nagpur_logs] (weight_TRNO,VEHICLENO,PTC_status,PTCDT,MSG)"
+							+ " values (:TransactionNo2,:VehicleNo,:GROSSWeight,GETDATE(),:TareWeight)  ";
 					
 					BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(obj);		 
 				    count = namedParamJdbcTemplate.update(insertQry, paramSource);
@@ -115,8 +115,7 @@ public class BMWDao {
 				BrainBox obj = new BrainBox();
 				obj.setGROSSWeight(null);
 				obj.setTareWeight(obj1.getMSG());
-				obj.setDateOUT(obj1.getUser_ip());		
-				String insertQry = "INSERT INTO [hyd_logs] (user_ip,weight_TRNO,VEHICLENO,PTC_status,PTCDT,MSG) values (:dateOUT,:TransactionNo2,:VehicleNo,:GROSSWeight,GETDATE(),:TareWeight)  "
+				String insertQry = "INSERT INTO [All_CnD_Sites].[dbo].[nagpur_logs] (weight_TRNO,VEHICLENO,PTC_status,PTCDT,MSG) values (:TransactionNo2,:VehicleNo,:GROSSWeight,GETDATE(),:TareWeight)  "
 				+ " ";
 				
 				BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(obj);		 
@@ -132,12 +131,12 @@ public class BMWDao {
 		return count;
 	}
 
-	public int getLogInfo(SBU obj1, BrainBox obj, List<BrainBox> companiesList) throws SQLException {
+	public int getLogInfo(BMWSAP obj1, BrainBox obj, List<Nagpur> companiesList) throws SQLException {
 		int count = 0;
 		try{  
 			if(!StringUtils.isEmpty(companiesList) && companiesList.size() > 0) {
-				for (BrainBox obj11 : companiesList) {
-					String checkingLogQry = "SELECT count(*) from [hyd_logs] where weight_TRNO= ? and VEHICLENO= ?";
+				for (Nagpur obj11 : companiesList) {
+					String checkingLogQry = "SELECT count(*) from [All_CnD_Sites].[dbo].[nagpur_logs] where weight_TRNO= ? and VEHICLENO= ?";
 					count = jdbcTemplate.queryForObject(checkingLogQry, new Object[] {obj11.getTransactionNo2(),obj11.getVehicleNo()}, Integer.class);
 				}
 			}
@@ -282,13 +281,13 @@ public class BMWDao {
 			
 				if(count == 0) {
 					 String insertQry = "INSERT into  customers_master "
-							+ "(customer,serverTime,Registrationnumber,SA_STATUSBLOCK,SPCB_CD,NO_BEDS_INV,SD_Plantcode,SD_Plantname,NAME1,NAME_CO,STREET,CITY,POSTCODE,STATECODE,COUNTRY,LANGU,MOBILENUMBER,MAILID,"
+							+ "(RT_CD_BIL,weekdays,customer,serverTime,Registrationnumber,SA_STATUSBLOCK,SPCB_CD,NO_BEDS_INV,SD_Plantcode,SD_Plantname,NAME1,NAME_CO,STREET,CITY,POSTCODE,STATECODE,COUNTRY,LANGU,MOBILENUMBER,MAILID,"
 							+ "CUSTOMERGROUP,AUFSD,ACTSERVICECERTFROMDATE,ACTSERVICECERTTODATE,SERVICESTARTDATE,"
 							+ "REGISTRATIONDATE,UPPERSLABINKG,RATEREVISIONPERIOD,RATEREVISION,LATLONGONPICKUPPOINT,CUSTOMERAGREEMENTFROM,CUSTOMERAGREEMENTTO,"
 							+ "CUS_GRP,CUSTOMERFACILITY,CUSTOMERFACILITYTYPE,"
 							+ "CUSTOMERFREQUENCY,NOOFPICKUPLOCATION,ACTIVE_INACTIVE,NOOFDAYSSERVEDINMONTH,CHNGIND,created_date,BATCHID,EXECUTIVE_EMAIL,EXECUTIVE_CONTACT,SAPCREATEDT,UDATE)"
 							+ " VALUES"
-							+ " (:customer,getdate(),:Registrationnumber,:SA_STATUSBLOCK,:SPCB_CD,:NO_BEDS_INV,:SD_Plantcode,:SD_Plantname,:NAME1,:NAME_CO,:STREET,:CITY,:POSTCODE,:STATECODE,:COUNTRY,:LANGU,:MOBILENUMBER,:MAILID,:CUSTOMERGROUP,:AUFSD,:ACTSERVICECERTFROMDATE,:ACTSERVICECERTTODATE,:SERVICESTARTDATE,"
+							+ " (:RT_CD_BIL,:weekdays,:customer,getdate(),:Registrationnumber,:SA_STATUSBLOCK,:SPCB_CD,:NO_BEDS_INV,:SD_Plantcode,:SD_Plantname,:NAME1,:NAME_CO,:STREET,:CITY,:POSTCODE,:STATECODE,:COUNTRY,:LANGU,:MOBILENUMBER,:MAILID,:CUSTOMERGROUP,:AUFSD,:ACTSERVICECERTFROMDATE,:ACTSERVICECERTTODATE,:SERVICESTARTDATE,"
 							+ ":REGISTRATIONDATE,:UPPERSLABINKG,:RATEREVISIONPERIOD,:RATEREVISION,:LATLONGONPICKUPPOINT,:CUSTOMERAGREEMENTFROM,:CUSTOMERAGREEMENTTO,:CUS_GRP,:CUSTOMERFACILITY,:CUSTOMERFACILITYTYPE,"
 							+ ":CUSTOMERFREQUENCY,:NOOFPICKUPLOCATION,:ACTIVE_INACTIVE,:NOOFDAYSSERVEDINMONTH,:CHNGIND,getdate(),:BATCHID,:EXECUTIVE_EMAIL,:EXECUTIVE_CONTACT,:SAPCREATEDT,:UDATE); ";
 					 
@@ -296,7 +295,7 @@ public class BMWDao {
 					 	insertCount =   namedParamJdbcTemplate.update(insertQry, paramSource);
 						uploaded++;
 				}else if(count > 0){
-					String updateQry =" UPDATE customers_master SET Registrationnumber = :Registrationnumber, SA_STATUSBLOCK = :SA_STATUSBLOCK, SPCB_CD = :SPCB_CD, NO_BEDS_INV = :NO_BEDS_INV, "
+					String updateQry =" UPDATE customers_master SET weekdays = :weekdays,RT_CD_BIL = :RT_CD_BIL,Registrationnumber = :Registrationnumber, SA_STATUSBLOCK = :SA_STATUSBLOCK, SPCB_CD = :SPCB_CD, NO_BEDS_INV = :NO_BEDS_INV, "
 								+ "	SD_Plantcode = :SD_Plantcode "
 								+ "	, SD_Plantname = :SD_Plantname, NAME1 = :NAME1, NAME_CO = :NAME_CO, "
 								+ "	STREET = :STREET, CITY = :CITY "
@@ -461,7 +460,74 @@ public class BMWDao {
 			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 			BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(dB);		 
 			
+		    String qry = "  SELECT (select profit_center from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS profit_center,		  "
+		    		+ "		(select profit_center_name from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS profit_center_name,  "
+		    		+ "		(select project_code from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS project_code,  "
+		    		+ "		 MAX(d.plant_name) AS plant_name,max(CustomerCode) as customerId, "
+		    		+ "		  (select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where  CustomerCode = (CustomerSAPCode) ";
+		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
+				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
+					}
+		    		qry = qry +  ") AS totalVisits,  "
+		    		+ "				 SUM(TRY_CAST(TotalCount AS FLOAT )) as TotalCount,  "
+		    		+ "				 SUM(TRY_CAST(TotalWeight AS FLOAT )) as TotalWeight,  "
+		    		+ "				 MAX(d.company) AS company, "
+		    		+ "				 (select company_code from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS company_code,  "
+		    		+ "(select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where  CustomerCode = (CustomerSAPCode) and CustomerStatus = 'true'"
+		    		;
+		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
+				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
+					}
+		    		qry = qry + ") AS ActiveVisits,  "
+		    		+ "(select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
+		    		+ "where  CustomerCode = (CustomerSAPCode) and CustomerStatus = 'false'"
+		    		;
+		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
+				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
+					}
+		    		qry = qry + ") AS InactiveVisits, "
+		    		+ "				 MAX(d.plant_name) AS plant_name,				MAX(d.TypeofEstablishment) AS TypeofEstablishment,			  "
+		    		+ "				 MAX(d.ServiceFrequency) AS ServiceFrequency,				MAX(d.ActualVisitMonth) AS ActualVisitMonth,	  "
+		    		+ "				 MAX(d.CustomerStatus) AS CustomerStatus,CustomerCode as customerID   "
+		    		+ "				FROM ALL_BMW_Sites.dbo.[transactions_summary] d   "
+		    		+ "				left join [MasterDB].[dbo].[master_table] m on m.project_name = d.plant_name 		 "
+		    		+ "				 where CustomerCode is not null and  exists (select customer from customers_master m where d.CustomerCode = m.customer) ";
 			
+		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getProject_code())) {
+		    	qry = qry + "and  m.project_code = '"+dB.getProject_code()+"'";
+			}
+		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getCustomerSAPCode())) {
+		    	qry = qry + " AND d.CustomerCode = '"+dB.getCustomerSAPCode()+"'";
+			}
+		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
+		    	qry = qry + " AND d.ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
+			}
+			qry = qry +"  group by CustomerCode,ActualVisitMonth "; 
+			
+			
+			objsList = jdbcTemplate.query( qry, new BeanPropertyRowMapper<BMWSAPOUTPUT>(BMWSAPOUTPUT.class));
+			if(objsList.size() > 0 ) {
+				dB.setMSG("DATA Pulled");
+				dB.setStatus("Success");
+				String insertQry = "INSERT INTO [bmw_summery_logs] (project_code,CustomerCode,ActualVisitMonth,MSG,pull_datetime,status)"
+						+ " values (:project_code,:CustomerCode,:ActualVisitMonth,:MSG,GETDATE(),:status)  ";
+				
+				paramSource = new BeanPropertySqlParameterSource(dB);		 
+			    int count = namedParamJdbcTemplate.update(insertQry, paramSource);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return objsList;
+	}
+
+	public List<DashBoardWeighBridge> getSpacesOutFromTablesList(BMWSAP obj) {
+		List<DashBoardWeighBridge> objsList = new ArrayList<DashBoardWeighBridge>();
+		try {
+			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+			BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(obj);
 			String ERQ2 = "  UPDATE ALL_BMW_Sites.dbo.bmw_detailed SET [plant] = LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(REPLACE([plant], "
 					+ "CHAR(10), CHAR(32)), CHAR(13), CHAR(32)), CHAR(160), CHAR(32)),CHAR(9),CHAR(32))))";
 			paramSource = new BeanPropertySqlParameterSource(obj);	 
@@ -482,67 +548,109 @@ public class BMWDao {
 			paramSource = new BeanPropertySqlParameterSource(obj);	 
 			namedParamJdbcTemplate.update(ERQ1, paramSource);
 			
+			String ERQ4 = "  UPDATE [ALL_BMW_Sites].[dbo].[transactions_summary] SET [plant_name] = LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(REPLACE([plant_name], "
+					+ "CHAR(10), CHAR(32)), CHAR(13), CHAR(32)), CHAR(160), CHAR(32)),CHAR(9),CHAR(32))))";
+			paramSource = new BeanPropertySqlParameterSource(obj);	 
+			namedParamJdbcTemplate.update(ERQ4, paramSource);
 			
-		    String qry = "  SELECT (select profit_center from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS profit_center,		  "
-		    		+ "		(select profit_center_name from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS profit_center_name,  "
-		    		+ "		(select project_code from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS project_code,  "
-		    		+ "		 MAX(d.plant) AS plant_name,max(CustomerCABSCode) as customerId, "
-		    		+ "		  (select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
-		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) ";
-		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
-				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
-					}
-		    		qry = qry +  ") AS totalVisits,  "
-		    		+ "				 SUM(TRY_CAST(TotalCount AS FLOAT )) as TotalCount,  "
-		    		+ "				 SUM(TRY_CAST(TotalWeight AS FLOAT )) as TotalWeight,  "
-		    		+ "				 MAX(d.company) AS company, "
-		    		+ "				 (select company_code from [MasterDB].[dbo].[master_table] where company = MAX(d.company)) AS company_code,  "
-		    		+ "(select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
-		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) and CustomerStatus = 'true'"
-		    		;
-		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
-				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
-					}
-		    		qry = qry + ") AS ActiveVistis,  "
-		    		+ "(select count(distinct([ManifestNo])) from ALL_BMW_Sites.dbo.bmw_detailed  "
-		    		+ "where CustomerSAPCode = MAX(d.CustomerSAPCode) and CustomerStatus = 'false'"
-		    		;
-		    		if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
-				    	qry = qry + " AND ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
-					}
-		    		qry = qry + ") AS incativeVisits, "
-		    		+ "				 MAX(d.plant) AS plant_name,				MAX(d.TypeofEstablishment) AS TypeofEstablishment,			  "
-		    		+ "				 MAX(d.ServiceFrequency) AS ServiceFrequency,				MAX(d.ActualVisitMonth) AS ActualVisitMonth,	  "
-		    		+ "				 MAX(d.CustomerStatus) AS CustomerStatus,CustomerSAPCode as customerID   "
-		    		+ "				FROM ALL_BMW_Sites.dbo.bmw_detailed d   "
-		    		+ "				left join [MasterDB].[dbo].[master_table] m on m.project_name = d.plant 		 "
-		    		+ "				 where CustomerSAPCode is not null ";
+			String ERQ5 = "  UPDATE ALL_BMW_Sites.dbo.transactions_summary SET [CustomerCode] = LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(REPLACE([CustomerCode], "
+					+ "CHAR(10), CHAR(32)), CHAR(13), CHAR(32)), CHAR(160), CHAR(32)),CHAR(9),CHAR(32))))";
+			paramSource = new BeanPropertySqlParameterSource(obj);	 
+			namedParamJdbcTemplate.update(ERQ5, paramSource);
 			
-		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getProject_code())) {
-		    	qry = qry + "and  m.project_code = '"+dB.getProject_code()+"'";
-			}
-		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getCustomerSAPCode())) {
-		    	qry = qry + " AND d.CustomerSAPCode = '"+dB.getCustomerSAPCode()+"'";
-			}
-		    if(!StringUtils.isEmpty(dB) && !StringUtils.isEmpty(dB.getActualVisitMonth())) {
-		    	qry = qry + " AND d.ActualVisitMonth = '"+dB.getActualVisitMonth()+"'";
-			}
-			qry = qry +"  group by CustomerSAPCode,ActualVisitMonth "; 
-			
-			
-			objsList = jdbcTemplate.query( qry, new BeanPropertyRowMapper<BMWSAPOUTPUT>(BMWSAPOUTPUT.class));
-			if(objsList.size() > 0 ) {
-				dB.setMSG("DATA Pulled");
-				dB.setStatus("Success");
-				String insertQry = "INSERT INTO [bmw_summery_logs] (project_code,CustomerCode,ActualVisitMonth,MSG,pull_datetime,status)"
-						+ " values (:project_code,:CustomerSAPCode,:ActualVisitMonth,:MSG,GETDATE(),:status)  ";
-				
-				paramSource = new BeanPropertySqlParameterSource(dB);		 
-			    int count = namedParamJdbcTemplate.update(insertQry, paramSource);
-			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return objsList;
+	}
+	
+	public List<Nagpur> getNagpurCNDList(BMWSAP obj1, BrainBox obj, HttpServletResponse response) throws SQLException {
+		List<Nagpur> menuList = null;
+		boolean flag = false;
+		int count = 0;
+		try{  
+			String user_id = "recgwbngpr";
+			String password = "X1298extvbddyzA";
+			//String Myip = Inet4Address.getLocalHost().getHostAddress();
+			String time = " 12:00:00 AM";
+			
+			String qry = "SELECT SITEID as TransactionNo1,Trno as TransactionNo2,TRANSPORTER as Transporter,PARTY as Transferstation, Vehicleno as VehicleNo, Material as Zone, "
+					+ "Party as Location, Transporter as Transporter, LEFT(CONVERT(varchar, Datein, 24),9) AS DateIN, "
+					+ "RIGHT(CONVERT(varchar, Timein, 24),11) AS TimeIN, LEFT(CONVERT(varchar, Dateout, 24),9) AS DateOUT, "
+					+ "RIGHT(CONVERT(varchar, Timeout, 24),11) AS TimeOUT,Firstweight as GROSSWeight, SiteID, Secondweight as TareWeight,"
+					+ "NetWT as NetWeight, typeofwaste AS TypeofMaterial FROM [All_CnD_Sites].[dbo].[WEIGHT] WITH (nolock) "
+					+ "WHERE (Trno IS NOT NULL) AND (Vehicleno IS NOT NULL) AND (Datein IS NOT NULL) "
+					+ "AND (Timein IS NOT NULL) AND (Firstweight IS NOT NULL) AND (Dateout IS NOT NULL) AND "
+					+ "(Timeout IS NOT NULL) AND (Secondweight IS NOT NULL) AND (NetWT IS NOT NULL) and(SiteID is not null) AND [SITEID] = 'NAGPURCND_WB1' ";
+					int arrSize = 0;
+				    if(!StringUtils.isEmpty(obj1) && !StringUtils.isEmpty(obj1.getFrom_date())) {
+				    	qry = qry + " AND CONVERT(varchar(10), DATEOUT, 105) = CONVERT(varchar(10), ?, 105) ";
+						arrSize++;
+					}
+					qry = qry +"  ORDER BY TRNO desc "; 
+					Object[] pValues = new Object[arrSize];
+					int i = 0;
+					if(!StringUtils.isEmpty(obj1) && !StringUtils.isEmpty(obj1.getFrom_date())) {
+						pValues[i++] = obj1.getFrom_date()+time;;
+					}
+			menuList = jdbcTemplate.query( qry,pValues, new BeanPropertyRowMapper<Nagpur>(Nagpur.class));
+		
+		}catch(Exception e){ 
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		}
+		return menuList;
+	}
+
+	public int getLogInfo(DashBoardWeighBridge obj1, BrainBox obj, List<BrainBox> companiesList) throws SQLException {
+		int count = 0;
+		try{  
+			if(!StringUtils.isEmpty(companiesList) && companiesList.size() > 0) {
+				for (BrainBox obj11 : companiesList) {
+					String checkingLogQry = "SELECT count(*) from [nagpur_logs] where weight_TRNO= ? and VEHICLENO= ?";
+					count = jdbcTemplate.queryForObject(checkingLogQry, new Object[] {obj11.getTransactionNo2(),obj11.getVehicleNo()}, Integer.class);
+				}
+			}
+		}catch(Exception e){ 
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		}
+		return count;
+	}
+
+	public Object getLogsOfResults(List<BrainBox> companiesList, DashBoardWeighBridge obj1) throws SQLException {
+		int count = 0;
+		try {
+			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+			if(companiesList.size() > 0) {
+				for(BrainBox obj : companiesList) {
+					obj.setGROSSWeight(obj1.getPTC_status());
+					obj.setTareWeight(obj1.getMSG());
+					obj.setDateOUT(obj1.getUser_ip());					
+					String insertQry = "INSERT INTO [nagpur_logs] (user_ip,weight_TRNO,VEHICLENO,PTC_status,PTCDT,MSG)"
+							+ " values (:dateOUT,:TransactionNo2,:VehicleNo,:GROSSWeight,GETDATE(),:TareWeight)  ";
+					
+					BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(obj);		 
+				    count = namedParamJdbcTemplate.update(insertQry, paramSource);
+				}
+			}else {
+				BrainBox obj = new BrainBox();
+				obj.setGROSSWeight(null);
+				obj.setTareWeight(obj1.getMSG());
+				obj.setDateOUT(obj1.getUser_ip());		
+				String insertQry = "INSERT INTO [nagpur_logs] (user_ip,weight_TRNO,VEHICLENO,PTC_status,PTCDT,MSG) values (:dateOUT,:TransactionNo2,:VehicleNo,:GROSSWeight,GETDATE(),:TareWeight)  "
+				+ " ";
+				
+				BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(obj);		 
+			    count = namedParamJdbcTemplate.update(insertQry, paramSource);
+			}
+		
+			
+		}catch(Exception e){ 
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+			
+		}
+		return count;
 	}
 }
